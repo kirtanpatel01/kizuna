@@ -3,6 +3,12 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 
 import appCss from "../styles.css?url"
+import { Toaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import AppSidebar from "@/components/app-sidebar"
+import { ThemeProvider } from '@/components/theme-provider'
+import { QueryProvider } from '@/providers/query-provider'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,12 +42,28 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider defaultTheme="system" storageKey="theme">
+          <QueryProvider>
+            <TooltipProvider>
+              <SidebarProvider
+                style={
+                  {
+                    "--sidebar-width": "12rem",
+                  } as React.CSSProperties
+                }
+              >
+                <AppSidebar />
+                <main>{children}</main>
+              </SidebarProvider>
+            </TooltipProvider>
+          </QueryProvider>
+        </ThemeProvider>
+        <Toaster richColors />
         <TanStackDevtools
           config={{
             position: "bottom-right",
