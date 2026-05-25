@@ -11,7 +11,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from './ui/sidebar'
-import { CircleUserRound, Club, Hexagon, Trophy } from 'lucide-react'
+import { CircleUserRound, Club, Hexagon, Trophy, UserCog } from 'lucide-react'
 import { ModeToggle } from './mode-toggle'
 
 function AppSidebar() {
@@ -27,9 +27,14 @@ function AppSidebar() {
       icon: <Trophy />,
     },
     {
+      name: 'Profile',
+      href: '/profile',
+      icon: <CircleUserRound />,
+    },
+    {
       name: 'Account',
       href: '/account',
-      icon: <CircleUserRound />,
+      icon: <UserCog />,
     },
   ]
 

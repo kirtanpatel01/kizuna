@@ -58,7 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                 }
               >
                 <AppSidebar />
-                <main>{children}</main>
+                <main className="w-full">{children}</main>
               </SidebarProvider>
             </TooltipProvider>
           </QueryProvider>

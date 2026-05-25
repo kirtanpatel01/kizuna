@@ -1,5 +1,15 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  index,
+  integer,
+  pgTable,
+  pgEnum,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -74,9 +84,111 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const profileGender = pgEnum("profile_gender", [
+  "male",
+  "female",
+  "no",
+]);
+
+export const profile = pgTable("profile", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  dob: date("dob"),
+  gender: profileGender("gender"),
+  bio: text("bio"),
+  isPrivate: boolean("is_private").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const echoInteractionType = pgEnum("echo_interaction_type", [
+  "like",
+  "save",
+  "share",
+]);
+
+export const echo = pgTable(
+  "echo",
+  {
+    id: text("id").primaryKey(),
+    content: text("content").notNull(),
+    authorId: text("author_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    likeCount: integer("like_count").default(0).notNull(),
+    commentCount: integer("comment_count").default(0).notNull(),
+    shareCount: integer("share_count").default(0).notNull(),
+    saveCount: integer("save_count").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("echo_authorId_idx").on(table.authorId),
+    index("echo_createdAt_idx").on(table.createdAt),
+  ],
+);
+
+export const echoComment = pgTable(
+  "echo_comment",
+  {
+    id: text("id").primaryKey(),
+    echoId: text("echo_id")
+      .notNull()
+      .references(() => echo.id, { onDelete: "cascade" }),
+    authorId: text("author_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("echo_comment_echoId_idx").on(table.echoId),
+    index("echo_comment_authorId_idx").on(table.authorId),
+    index("echo_comment_createdAt_idx").on(table.createdAt),
+  ],
+);
+
+export const echoInteraction = pgTable(
+  "echo_interaction",
+  {
+    id: text("id").primaryKey(),
+    echoId: text("echo_id")
+      .notNull()
+      .references(() => echo.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: echoInteractionType("type").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("echo_interaction_echoId_idx").on(table.echoId),
+    index("echo_interaction_userId_idx").on(table.userId),
+    uniqueIndex("echo_interaction_unique_idx").on(
+      table.echoId,
+      table.userId,
+      table.type,
+    ),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  echoes: many(echo),
+  echoComments: many(echoComment),
+  echoInteractions: many(echoInteraction),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -89,6 +201,37 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
+    references: [user.id],
+  }),
+}));
+
+export const echoRelations = relations(echo, ({ one, many }) => ({
+  author: one(user, {
+    fields: [echo.authorId],
+    references: [user.id],
+  }),
+  comments: many(echoComment),
+  interactions: many(echoInteraction),
+}));
+
+export const echoCommentRelations = relations(echoComment, ({ one }) => ({
+  echo: one(echo, {
+    fields: [echoComment.echoId],
+    references: [echo.id],
+  }),
+  author: one(user, {
+    fields: [echoComment.authorId],
+    references: [user.id],
+  }),
+}));
+
+export const echoInteractionRelations = relations(echoInteraction, ({ one }) => ({
+  echo: one(echo, {
+    fields: [echoInteraction.echoId],
+    references: [echo.id],
+  }),
+  user: one(user, {
+    fields: [echoInteraction.userId],
     references: [user.id],
   }),
 }));
