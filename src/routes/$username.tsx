@@ -1,0 +1,205 @@
+import { createFileRoute } from "@tanstack/react-router"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { getPublicProfile } from "@/actions/profile.action"
+import { Separator } from "@/components/ui/separator"
+import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
+import { toast } from "sonner"
+import { followUser, unfollowUser } from "@/actions/follow.actions"
+import ProfileConnections from "@/components/profile/profile-connections"
+import { Bookmark, Heart, MessageCircle, Send } from "lucide-react"
+
+const mockPosts = [
+  {
+    id: "post-1",
+    content:
+      "Shipping the public profile view today. Keeping the surface small and focused.",
+    createdAtLabel: "2h ago",
+  },
+  {
+    id: "post-2",
+    content:
+      "The feed is still mocked for now, but the layout is ready for live echoes later.",
+    createdAtLabel: "Yesterday",
+  },
+  {
+    id: "post-3",
+    content:
+      "Public profiles should feel quick: clear identity, counts, and a readable timeline.",
+    createdAtLabel: "3 days ago",
+  },
+]
+
+export const Route = createFileRoute("/$username")({
+  loader: async ({ params }) =>
+    getPublicProfile({ data: { username: params.username } }),
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const params = Route.useParams()
+  const profile = Route.useLoaderData()
+  const [profileState, setProfileState] = useState(profile)
+
+  if (!profileState) {
+    return (
+      <div className="mx-auto max-w-3xl p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile not found</CardTitle>
+            <CardDescription>
+              The public profile for this username could not be loaded.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
+  }
+
+  const followMutation = useMutation({
+    mutationFn: async () => {
+      const result = profileState.isFollowing
+        ? await unfollowUser({ data: { username: params.username } })
+        : await followUser({ data: { username: params.username } })
+
+      if (!result?.success) {
+        throw new Error(result?.message ?? "Failed to update follow state")
+      }
+
+      return result
+    },
+    onSuccess: async (result) => {
+      toast.success(result.message ?? "Updated follow state")
+
+      const refreshedProfile = await getPublicProfile({
+        data: { username: params.username },
+      })
+
+      if (refreshedProfile) {
+        setProfileState(refreshedProfile)
+      }
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update follow state"
+      )
+    },
+  })
+
+  const displayName = profileState?.name?.trim() || "Not provided"
+  const username = profileState?.username?.trim() || "Not provided"
+  const bio = profileState?.bio?.trim() || "Not provided"
+  const hasImage = Boolean(profileState?.image)
+  const initials =
+    profileState?.name
+      ?.trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("") || "?"
+
+  return (
+    <div className="mx-auto max-w-6xl p-4 sm:p-5">
+      <div className="grid gap-4 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
+        <div className="flex flex-col gap-4">
+          <Card className="h-fit">
+            <CardHeader>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  {hasImage ? (
+                    <img
+                      src={profileState.image ?? ""}
+                      alt={displayName}
+                      className="size-14 rounded-full border object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-14 items-center justify-center rounded-full border bg-secondary text-lg font-semibold text-secondary-foreground">
+                      {initials}
+                    </div>
+                  )}
+
+                  <div>
+                    <CardTitle className="text-2xl">{displayName}</CardTitle>
+                    <CardDescription>@{username}</CardDescription>
+                  </div>
+                </div>
+
+                {!profileState.isOwnProfile ? (
+                  <Button
+                    onClick={() => followMutation.mutate()}
+                    disabled={followMutation.isPending}
+                  >
+                    {profileState.isFollowing ? "Unfollow" : "Follow"}
+                  </Button>
+                ) : null}
+              </div>
+
+              <p className="text-sm leading-6 text-muted-foreground">{bio}</p>
+            </CardHeader>
+          </Card>
+
+          <ProfileConnections
+            followers={profileState.followers}
+            following={profileState.following}
+            followersCount={profileState.followersCount}
+            followingCount={profileState.followingCount}
+          />
+        </div>
+
+        <div className="grid gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Feed</CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <div className="grid gap-3 lg:grid-cols-2">
+                {mockPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="flex flex-col border border-border/70 bg-background/80"
+                  >
+                    <div className="flex items-center justify-between p-2">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-0.5 text-sm text-rose-400">
+                          <Heart size={14} />
+                          <span>12</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 text-sm text-green-400">
+                          <MessageCircle size={14} />
+                          <span>3</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 text-sm text-yellow-400">
+                          <Send size={14} />
+                          <span>6</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 text-sm text-sky-400">
+                          <Bookmark size={14} />
+                          <span>1</span>
+                        </div>
+                      </div>
+                      <span className="self-end text-xs text-muted-foreground">
+                        {post.createdAtLabel}
+                      </span>
+                    </div>
+                    <Separator />
+                    <p className="p-3 text-sm leading-6 text-foreground/90">
+                      {post.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}

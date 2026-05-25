@@ -105,6 +105,24 @@ export const profile = pgTable("profile", {
     .notNull(),
 });
 
+export const follow = pgTable(
+  "follow",
+  {
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("follow_followerId_idx").on(table.followerId),
+    index("follow_followingId_idx").on(table.followingId),
+    uniqueIndex("follow_unique_idx").on(table.followerId, table.followingId),
+  ],
+);
+
 export const echoInteractionType = pgEnum("echo_interaction_type", [
   "like",
   "save",
@@ -189,6 +207,8 @@ export const userRelations = relations(user, ({ many }) => ({
   echoes: many(echo),
   echoComments: many(echoComment),
   echoInteractions: many(echoInteraction),
+  followers: many(follow, { relationName: "following" }),
+  following: many(follow, { relationName: "follower" }),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -233,5 +253,18 @@ export const echoInteractionRelations = relations(echoInteraction, ({ one }) => 
   user: one(user, {
     fields: [echoInteraction.userId],
     references: [user.id],
+  }),
+}));
+
+export const followRelations = relations(follow, ({ one }) => ({
+  follower: one(user, {
+    fields: [follow.followerId],
+    references: [user.id],
+    relationName: "follower",
+  }),
+  following: one(user, {
+    fields: [follow.followingId],
+    references: [user.id],
+    relationName: "following",
   }),
 }));

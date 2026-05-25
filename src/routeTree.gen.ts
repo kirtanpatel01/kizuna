@@ -15,7 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as AccountRouteImport } from './routes/account'
-import { Route as UserIdRouteImport } from './routes/$userId'
+import { Route as UsernameRouteImport } from './routes/$username'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EchoEchoIdRouteImport } from './routes/echo.$echoId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -50,9 +50,9 @@ const AccountRoute = AccountRouteImport.update({
   path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserIdRoute = UserIdRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
+const UsernameRoute = UsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -73,7 +73,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$userId': typeof UserIdRoute
+  '/$username': typeof UsernameRoute
   '/account': typeof AccountRoute
   '/feed': typeof FeedRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -85,7 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$userId': typeof UserIdRoute
+  '/$username': typeof UsernameRoute
   '/account': typeof AccountRoute
   '/feed': typeof FeedRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -98,7 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$userId': typeof UserIdRoute
+  '/$username': typeof UsernameRoute
   '/account': typeof AccountRoute
   '/feed': typeof FeedRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -112,7 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$userId'
+    | '/$username'
     | '/account'
     | '/feed'
     | '/leaderboard'
@@ -124,7 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$userId'
+    | '/$username'
     | '/account'
     | '/feed'
     | '/leaderboard'
@@ -136,7 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/$userId'
+    | '/$username'
     | '/account'
     | '/feed'
     | '/leaderboard'
@@ -149,7 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  UserIdRoute: typeof UserIdRoute
+  UsernameRoute: typeof UsernameRoute
   AccountRoute: typeof AccountRoute
   FeedRoute: typeof FeedRoute
   LeaderboardRoute: typeof LeaderboardRoute
@@ -204,11 +204,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$userId': {
-      id: '/$userId'
-      path: '/$userId'
-      fullPath: '/$userId'
-      preLoaderRoute: typeof UserIdRouteImport
+    '/$username': {
+      id: '/$username'
+      path: '/$username'
+      fullPath: '/$username'
+      preLoaderRoute: typeof UsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -237,7 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  UserIdRoute: UserIdRoute,
+  UsernameRoute: UsernameRoute,
   AccountRoute: AccountRoute,
   FeedRoute: FeedRoute,
   LeaderboardRoute: LeaderboardRoute,

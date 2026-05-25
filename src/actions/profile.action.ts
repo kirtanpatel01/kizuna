@@ -2,9 +2,9 @@ import { createServerFn } from "@tanstack/react-start"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { profile, user as userTable } from "@/lib/schema"
+import { follow, profile, user as userTable } from "@/lib/schema"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { eq, or } from "drizzle-orm"
+import { and, count, desc, eq } from "drizzle-orm"
 
 type ProfileGender = "male" | "female" | "no"
 
@@ -93,15 +93,19 @@ export const upsertProfile = createServerFn({ method: "POST" })
 			}
 
 			const payload = input as Record<string, unknown>
-			const userId = typeof payload.userId === "string" ? payload.userId.trim() : ""
+			const username = typeof payload.username === "string" ? payload.username.trim() : ""
 
-			if (!userId) {
-				throw new Error("User id is required")
+			if (!username) {
+				throw new Error("Username is required")
 			}
 
-			return { userId }
+			return { username }
 		})
 		.handler(async ({ data }) => {
+			const headers = getRequestHeaders()
+			const session = await auth.api.getSession({ headers })
+			const viewerId = session?.user?.id ?? null
+
 			const [row] = await db
 				.select({
 					id: userTable.id,
@@ -112,10 +116,52 @@ export const upsertProfile = createServerFn({ method: "POST" })
 				})
 				.from(userTable)
 				.leftJoin(profile, eq(profile.userId, userTable.id))
-				.where(or(eq(userTable.id, data.userId), eq(userTable.username, data.userId)))
+				.where(eq(userTable.username, data.username))
 				.limit(1)
 
 			if (!row) return null
+
+			const [followersRow] = await db
+				.select({ count: count() })
+				.from(follow)
+				.where(eq(follow.followingId, row.id))
+
+			const [followingRow] = await db
+				.select({ count: count() })
+				.from(follow)
+				.where(eq(follow.followerId, row.id))
+
+			const isOwnProfile = viewerId === row.id
+			const [followStateRow] = viewerId && !isOwnProfile
+				? await db
+					.select({ count: count() })
+					.from(follow)
+					.where(and(eq(follow.followerId, viewerId), eq(follow.followingId, row.id)))
+				: [{ count: 0 }]
+
+			const followers = await db
+				.select({
+					id: userTable.id,
+					name: userTable.name,
+					username: userTable.username,
+					image: userTable.image,
+				})
+				.from(follow)
+				.innerJoin(userTable, eq(userTable.id, follow.followerId))
+				.where(eq(follow.followingId, row.id))
+				.orderBy(desc(follow.createdAt))
+
+			const following = await db
+				.select({
+					id: userTable.id,
+					name: userTable.name,
+					username: userTable.username,
+					image: userTable.image,
+				})
+				.from(follow)
+				.innerJoin(userTable, eq(userTable.id, follow.followingId))
+				.where(eq(follow.followerId, row.id))
+				.orderBy(desc(follow.createdAt))
 
 			return {
 				id: row.id,
@@ -123,7 +169,11 @@ export const upsertProfile = createServerFn({ method: "POST" })
 				username: row.username,
 				image: row.image,
 				bio: row.bio ?? null,
-				followersCount: 0,
-				followingCount: 0,
+				followersCount: Number(followersRow?.count ?? 0),
+				followingCount: Number(followingRow?.count ?? 0),
+				isFollowing: Number(followStateRow?.count ?? 0) > 0,
+				isOwnProfile,
+				followers,
+				following,
 			}
 		})
