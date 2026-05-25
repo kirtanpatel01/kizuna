@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAccountContext } from "@/providers/account-provider"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { postedEchoes } from "@/lib/echo-data"
+import { createEcho, type FeedEcho } from "@/actions/feed.actions"
 
 const MAX_ECHO_LENGTH = 280
 
@@ -28,7 +28,9 @@ function getInitials(name: string) {
 export function CreateEchoDialog() {
   const account = useAccountContext()
   const queryClient = useQueryClient()
+  const [open, setOpen] = useState(false)
   const [content, setContent] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
 
   const user = account.user
   const displayName = user?.name?.trim() || "User"
@@ -36,33 +38,35 @@ export function CreateEchoDialog() {
   const image = user?.image
 
   async function handleCreate() {
-    const trimmed = content.trim()
-    if (!trimmed) return
+    if (isCreating) return
 
-    const newEcho = {
-      id: `echo_${Date.now()}`,
-      content: trimmed,
-      createdAtLabel: "now",
-      authorName: displayName,
-      authorUsername: username,
-      authorImage: image ?? null,
-      likeCount: 0,
-      commentCount: 0,
-      shareCount: 0,
-      saveCount: 0,
+    const trimmed = content.trim()
+    if (!trimmed) {
+      toast.error("Please enter some content")
+      return
     }
 
-    // Update the client cache for posted echoes
-    queryClient.setQueryData<any[]>(["echoes", "posted"], (current) => {
-      return [newEcho, ...(current ?? postedEchoes)]
-    })
+    setIsCreating(true)
+    try {
+      const newEcho = await createEcho({ data: { content: trimmed } })
 
-    setContent("")
-    toast.success("Echo posted")
+      queryClient.setQueryData<FeedEcho[]>(["echoes", "posted"], (current) => {
+        return [newEcho, ...(current ?? [])]
+      })
+
+      setContent("")
+      toast.success("Echo posted")
+      setOpen(false)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to post echo"
+      toast.error(message)
+    } finally {
+      setIsCreating(false)
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Create Echo</Button>
       </DialogTrigger>
@@ -101,12 +105,12 @@ export function CreateEchoDialog() {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" disabled={isCreating}>Cancel</Button>
           </DialogClose>
 
-          <DialogClose asChild>
-            <Button onClick={handleCreate} disabled={!content.trim()}>Post Echo</Button>
-          </DialogClose>
+          <Button onClick={handleCreate} disabled={!content.trim() || isCreating}>
+            {isCreating ? "Posting..." : "Post Echo"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

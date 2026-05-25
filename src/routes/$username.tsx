@@ -14,38 +14,25 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { followUser, unfollowUser } from "@/actions/follow.actions"
 import ProfileConnections from "@/components/profile/profile-connections"
-import { Bookmark, Heart, MessageCircle, Send } from "lucide-react"
-
-const mockPosts = [
-  {
-    id: "post-1",
-    content:
-      "Shipping the public profile view today. Keeping the surface small and focused.",
-    createdAtLabel: "2h ago",
-  },
-  {
-    id: "post-2",
-    content:
-      "The feed is still mocked for now, but the layout is ready for live echoes later.",
-    createdAtLabel: "Yesterday",
-  },
-  {
-    id: "post-3",
-    content:
-      "Public profiles should feel quick: clear identity, counts, and a readable timeline.",
-    createdAtLabel: "3 days ago",
-  },
-]
+import { getEchoesByUsername } from "@/actions/feed.actions"
+import { BookmarkIcon, HeartIcon, MessageCircleIcon, Send } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/$username")({
-  loader: async ({ params }) =>
-    getPublicProfile({ data: { username: params.username } }),
+  loader: async ({ params }) => {
+    const [profile, feed] = await Promise.all([
+      getPublicProfile({ data: { username: params.username } }),
+      getEchoesByUsername({ data: { username: params.username } }),
+    ])
+
+    return { profile, feed }
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const params = Route.useParams()
-  const profile = Route.useLoaderData()
+  const { profile, feed } = Route.useLoaderData()
   const [profileState, setProfileState] = useState(profile)
 
   if (!profileState) {
@@ -161,45 +148,69 @@ function RouteComponent() {
 
             <CardContent>
               <div className="grid gap-3 lg:grid-cols-2">
-                {mockPosts.map((post) => (
-                  <div
+                {feed.map((post) => (
+                  <Link
+                    to="/echo/$echoId"
+                    params={{ echoId: post.id }}
                     key={post.id}
-                    className="flex flex-col border border-border/70 bg-background/80"
                   >
-                    <div className="flex items-center justify-between p-2">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-0.5 text-sm text-rose-400">
-                          <Heart size={14} />
-                          <span>12</span>
+                    <div className="flex flex-col border border-border/70 bg-background/80 hover:bg-black">
+                      <div className="flex items-center justify-between p-2">
+                        <div className="flex items-center gap-3">
+                          <Metric
+                            icon={HeartIcon}
+                            value={post.likeCount}
+                            colorClassName="text-rose-400"
+                          />
+                          <Metric
+                            icon={MessageCircleIcon}
+                            value={post.commentCount}
+                            colorClassName="text-green-400"
+                          />
+                          <Metric
+                            icon={Send}
+                            value={post.shareCount}
+                            colorClassName="text-yellow-400"
+                          />
+                          <Metric
+                            icon={BookmarkIcon}
+                            value={post.saveCount}
+                            colorClassName="text-sky-400"
+                          />
                         </div>
-                        <div className="flex items-center gap-0.5 text-sm text-green-400">
-                          <MessageCircle size={14} />
-                          <span>3</span>
-                        </div>
-                        <div className="flex items-center gap-0.5 text-sm text-yellow-400">
-                          <Send size={14} />
-                          <span>6</span>
-                        </div>
-                        <div className="flex items-center gap-0.5 text-sm text-sky-400">
-                          <Bookmark size={14} />
-                          <span>1</span>
-                        </div>
+                        <span className="self-end text-xs text-muted-foreground">
+                          {post.createdAtLabel}
+                        </span>
                       </div>
-                      <span className="self-end text-xs text-muted-foreground">
-                        {post.createdAtLabel}
-                      </span>
+                      <Separator />
+                      <p className="p-3 text-sm leading-6 text-foreground/90">
+                        {post.content}
+                      </p>
                     </div>
-                    <Separator />
-                    <p className="p-3 text-sm leading-6 text-foreground/90">
-                      {post.content}
-                    </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
+    </div>
+  )
+}
+
+function Metric({
+  icon: Icon,
+  value,
+  colorClassName,
+}: {
+  icon: typeof HeartIcon
+  value: number
+  colorClassName: string
+}) {
+  return (
+    <div className={`flex items-center gap-0.5 text-sm ${colorClassName}`}>
+      <Icon size={14} />
+      <span>{value}</span>
     </div>
   )
 }
