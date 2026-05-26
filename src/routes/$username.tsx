@@ -62,9 +62,39 @@ function RouteComponent() {
 
       return result
     },
-    onSuccess: async (result) => {
-      toast.success(result.message ?? "Updated follow state")
+    onMutate: async () => {
+      const previousProfile = profileState
 
+      setProfileState((current) => {
+        if (!current || current.isOwnProfile) {
+          return current
+        }
+
+        const nextIsFollowing = !current.isFollowing
+        const followersDelta = nextIsFollowing ? 1 : -1
+
+        return {
+          ...current,
+          isFollowing: nextIsFollowing,
+          followersCount: Math.max(current.followersCount + followersDelta, 0),
+        }
+      })
+
+      return { previousProfile }
+    },
+    onSuccess: (result) => {
+      toast.success(result.message ?? "Updated follow state")
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousProfile) {
+        setProfileState(context.previousProfile)
+      }
+
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update follow state"
+      )
+    },
+    onSettled: async () => {
       const refreshedProfile = await getPublicProfile({
         data: { username: params.username },
       })
@@ -72,11 +102,6 @@ function RouteComponent() {
       if (refreshedProfile) {
         setProfileState(refreshedProfile)
       }
-    },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update follow state"
-      )
     },
   })
 

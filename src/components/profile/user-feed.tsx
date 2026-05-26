@@ -19,8 +19,12 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EditEchoDialog } from "@/components/echo/edit-echo-dialog"
 import { DeleteEchoDialog } from "@/components/echo/delete-echo-dialog"
-import { getMyPostedEchoes, type FeedEcho } from "@/actions/feed.actions"
+import {
+  getMyPostedEchoes,
+  type FeedEcho,
+} from "@/actions/feed.actions"
 import { Button } from "@/components/ui/button"
+import { getSavedEchoes } from "@/actions/interactions.actions"
 
 export function UserFeed() {
   const [echoView, setEchoView] = useState<"posted" | "saved">("posted")
@@ -32,7 +36,13 @@ export function UserFeed() {
     queryFn: async () => getMyPostedEchoes(),
   })
 
+  const savedQuery = useQuery({
+    queryKey: ["echoes", "saved"],
+    queryFn: async () => getSavedEchoes(),
+  })
+
   const postedList = postedQuery.data ?? []
+  const savedList = savedQuery.data ?? []
 
   return (
     <Card className="bg-transperant min-h-160">
@@ -90,7 +100,7 @@ export function UserFeed() {
                   </CardFooter>
                 </Card>
               ))
-            : (echoView === "posted" ? postedList : []).map((echo) => (
+            : (echoView === "posted" ? postedList : savedList).map((echo) => (
                 <Card
                   key={echo.id}
                   size="sm"
@@ -98,7 +108,32 @@ export function UserFeed() {
                 >
                   <CardContent className="flex h-full flex-col gap-3">
                     <div className="flex items-start justify-between gap-3 text-xs text-muted-foreground">
-                      <div>{echo.createdAtLabel}</div>
+                      {echoView === "posted" ? (
+                        <div>{echo.createdAtLabel}</div>
+                      ) : (
+                        <div className="flex min-w-0 items-center gap-2">
+                          {echo.authorImage ? (
+                            <img
+                              src={echo.authorImage}
+                              alt={`${echo.authorName} profile`}
+                              className="size-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex size-8 items-center justify-center rounded-full bg-muted text-[11px] font-semibold uppercase text-muted-foreground">
+                              {echo.authorName?.slice(0, 1) ?? "U"}
+                            </div>
+                          )}
+
+                          <div className="min-w-0 leading-tight">
+                            <div className="truncate text-sm font-medium text-foreground">
+                              {echo.authorName}
+                            </div>
+                            <div className="truncate text-[11px] text-muted-foreground">
+                              @{echo.authorUsername}
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {echoView === "posted" ? (
                         <div className="flex items-center gap-1 text-muted-foreground">
@@ -128,7 +163,9 @@ export function UserFeed() {
                             }}
                           />
                         </div>
-                      ) : null}
+                      ) : (
+                        <div>{echo.createdAtLabel}</div>
+                      )}
                     </div>
 
                     {echo.content}
@@ -166,9 +203,42 @@ export function UserFeed() {
                 </Card>
               ))}
 
-          {echoView === "saved" ? (
+          {echoView === "saved" && savedQuery.isLoading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <Card
+                key={`saved-skeleton-${idx}`}
+                size="sm"
+                className="h-full animate-pulse bg-background/80 ring-transparent hover:bg-background hover:shadow-lg hover:ring-border/70"
+              >
+                <CardContent className="flex h-full flex-col gap-3">
+                  <div className="flex items-start justify-between gap-3 text-xs text-muted-foreground">
+                    <div className="h-3 w-6 rounded bg-muted/30" />
+                    <div className="h-3 w-8 rounded bg-muted/30" />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="h-3 w-full rounded bg-muted/30" />
+                    <div className="h-3 w-11/12 rounded bg-muted/30" />
+                    <div className="h-3 w-4/5 rounded bg-muted/30" />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="h-3 w-8 rounded bg-muted/30" />
+                    <div className="h-3 w-8 rounded bg-muted/30" />
+                    <div className="h-3 w-8 rounded bg-muted/30" />
+                    <div className="h-3 w-8 rounded bg-muted/30" />
+                  </div>
+
+                  <div className="h-6 w-6 rounded bg-muted/30" />
+                </CardFooter>
+              </Card>
+            ))
+          ) : null}
+
+          {echoView === "saved" && !savedQuery.isLoading && savedList.length === 0 ? (
             <div className="col-span-full rounded-xl border border-dashed bg-muted/20 p-6 text-sm text-muted-foreground">
-              Saved echoes are not connected yet.
+              No saved echoes yet.
             </div>
           ) : null}
         </div>
