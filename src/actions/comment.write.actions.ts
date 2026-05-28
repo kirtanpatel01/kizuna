@@ -5,6 +5,7 @@ import { and, eq, sql } from "drizzle-orm"
 
 import { formatCreatedAtLabel, getViewerId, type EchoCommentNode } from "@/lib/comment.shared"
 import { db } from "@/lib/db"
+import { recordCommentEngagement } from "@/lib/leaderboard.server"
 import { echo, echoComment, user } from "@/lib/schema"
 
 const MAX_COMMENT_LENGTH = 500
@@ -191,6 +192,16 @@ export const createComment = createServerFn({ method: "POST" })
 			throw new Error("Failed to create comment")
 		}
 
+		try {
+			await recordCommentEngagement({
+				postId: data.echoId,
+				authorId: created.echoAuthorId,
+				delta: 1,
+			})
+		} catch (error) {
+			console.error("Failed to update leaderboard for comment create", error)
+		}
+
 		return {
 			comment: mapCommentRowToNode(created),
 		}
@@ -308,6 +319,11 @@ export const deleteComment = createServerFn({ method: "POST" })
 
 		const subtreeIds = await getCommentSubtreeIds(comment.id, comment.echoId)
 		const deletedCount = subtreeIds.length
+		const [echoRow] = await db
+			.select({ authorId: echo.authorId })
+			.from(echo)
+			.where(eq(echo.id, comment.echoId))
+			.limit(1)
 
 		await db.delete(echoComment).where(eq(echoComment.id, comment.id))
 
@@ -325,6 +341,16 @@ export const deleteComment = createServerFn({ method: "POST" })
 					replyCount: sql<number>`greatest(${echoComment.replyCount} - 1, 0)`,
 				})
 				.where(eq(echoComment.id, comment.parentId))
+		}
+
+		try {
+			await recordCommentEngagement({
+				postId: comment.echoId,
+				authorId: echoRow?.authorId ?? viewerId,
+				delta: -deletedCount,
+			})
+		} catch (error) {
+			console.error("Failed to update leaderboard for comment delete", error)
 		}
 
 		return {

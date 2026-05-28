@@ -33,3 +33,15 @@ IMAGEKIT_PRIVATE_KEY=your_private_key
 
 `IMAGEKIT_PRIVATE_KEY` is only used on the server to generate upload signatures.
 `IMAGEKIT_PUBLIC_KEY` is returned to the client when creating upload auth params.
+
+## Redis leaderboard
+
+Run Redis locally with Docker before starting the app:
+
+```bash
+docker compose up -d redis
+```
+
+The app uses `REDIS_URL=redis://127.0.0.1:6379` in development. In production, point `REDIS_URL` at your Upstash Redis connection string.
+
+The leaderboard seeds itself from existing posts on first read, then stays updated from new likes, comments, saves, and post writes.

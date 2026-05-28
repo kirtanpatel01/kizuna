@@ -5,6 +5,7 @@ import { and, desc, eq, sql } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { recordPostEngagement } from "@/lib/leaderboard.server"
 import { echo, echoInteraction, user } from "@/lib/schema"
 import type { FeedEcho } from "@/actions/feed.actions"
 
@@ -129,10 +130,22 @@ async function toggleInteractionState(echoId: string, type: InteractionKind) {
 		.returning({
 			likeCount: echo.likeCount,
 			saveCount: echo.saveCount,
+			authorId: echo.authorId,
 		})
 
 	if (!updatedEcho) {
 		throw new Error("Echo not found")
+	}
+
+	try {
+		await recordPostEngagement({
+			postId: echoId,
+			authorId: updatedEcho.authorId,
+			delta,
+			type,
+		})
+	} catch (error) {
+		console.error("Failed to update leaderboard for echo interaction", error)
 	}
 
 	return {

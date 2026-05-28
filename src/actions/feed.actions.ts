@@ -4,6 +4,7 @@ import { and, desc, eq, inArray } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { recordPostCreated, recordPostDeleted } from "@/lib/leaderboard.server"
 import { echo, echoInteraction, user } from "@/lib/schema"
 
 const MAX_ECHO_LENGTH = 280
@@ -177,6 +178,12 @@ export const createEcho = createServerFn({ method: "POST" })
 			authorId: userId,
 		})
 
+		try {
+			await recordPostCreated(echoId, userId)
+		} catch (error) {
+			console.error("Failed to initialize leaderboard state for echo", error)
+		}
+
 		const [inserted] = await db
 			.select({
 				id: echo.id,
@@ -345,6 +352,12 @@ export const createEcho = createServerFn({ method: "POST" })
 
 			if (!deleted) {
 				throw new Error("Echo not found or not authorized")
+			}
+
+			try {
+				await recordPostDeleted(deleted.id, userId)
+			} catch (error) {
+				console.error("Failed to remove echo from leaderboard", error)
 			}
 
 			return { success: true, echoId: deleted.id }
