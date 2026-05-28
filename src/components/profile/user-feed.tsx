@@ -6,7 +6,6 @@ import {
   BookmarkIcon,
   HeartIcon,
   MessageCircleIcon,
-  Send,
 } from "lucide-react"
 import {
   Card,
@@ -181,11 +180,6 @@ export function UserFeed() {
                         icon={MessageCircleIcon}
                         value={echo.commentCount}
                         colorClassName="text-green-400"
-                      />
-                      <Metric
-                        icon={Send}
-                        value={echo.shareCount}
-                        colorClassName="text-yellow-400"
                       />
                       <Metric
                         icon={BookmarkIcon}

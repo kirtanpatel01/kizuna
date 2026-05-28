@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router"
 import {
   BookmarkIcon,
   HeartIcon,
-  Send,
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
@@ -68,7 +67,7 @@ function RouteComponent() {
 
             <p className="mb-6">{echo.content}</p>
 
-            <footer className="mt-2 flex items-center justify-between text-sm">
+            <footer className="mt-2 flex items-center justify-end gap-10 text-sm">
               <button
                 type="button"
                 className={`flex items-center gap-1 transition-colors ${
@@ -84,10 +83,6 @@ function RouteComponent() {
                 <span>{echo.likeCount}</span>
               </button>
               <CommentSheet echoId={echo.id} commentCount={echo.commentCount} />
-              <div className="flex cursor-pointer items-center gap-1 text-slate-500 hover:text-green-500">
-                <Send size={16} />
-                <span>{echo.shareCount}</span>
-              </div>
               <button
                 type="button"
                 className={`flex items-center gap-1 transition-colors ${

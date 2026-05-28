@@ -67,32 +67,31 @@ function CommentCard({
 	}
 
 	return (
-		<div className={level > 0 ? "ml-6 border-l border-border/70 pl-4" : ""}>
-			<div className="border-t border-border/70 pt-3">
+		<div>
+			<div>
 				<div className="flex items-start gap-3">
-					{comment.authorImage ? (
-						<img
-							src={comment.authorImage}
-							alt={comment.authorName}
-							className="size-10 rounded-full object-cover"
-						/>
-					) : (
-						<UserCircle2 className="size-10 text-muted-foreground" />
-					)}
-
 					<div className="min-w-0 flex-1">
-						<div className="flex items-start justify-between gap-3">
-							<div className="min-w-0">
-								<div className="flex flex-wrap items-center gap-2">
+						<div className="flex items-start justify-between gap-2">
+							<div className="flex items-center gap-2">
+								{comment.authorImage ? (
+									<img
+										src={comment.authorImage}
+										alt={comment.authorName}
+										className="size-10 rounded-full object-cover"
+									/>
+								) : (
+									<UserCircle2 className="size-10 text-muted-foreground" />
+								)}
+								<div className="flex flex-col">
 									<span className="truncate font-medium text-foreground">
 										{comment.authorName}
+										{comment.isEchoAuthor ? (
+											<span className="ml-2 text-xs text-primary">Author</span>
+										) : null}
 									</span>
 									<span className="text-sm text-muted-foreground">
 										@{comment.authorUsername}
 									</span>
-									{comment.isEchoAuthor ? (
-										<span className="ml-2 text-xs text-primary">Author</span>
-									) : null}
 								</div>
 							</div>
 
@@ -150,12 +149,12 @@ function CommentCard({
 								</div>
 							</div>
 						) : (
-							<p className="mt-2 whitespace-pre-wrap border-l border-border/70 pl-4 text-sm leading-6 text-foreground/90">
+							<p className="mt-2 whitespace-pre-wrap border-l border-border/70 pl-4 ml-4 text-sm leading-6 text-foreground/90">
 								{comment.content}
 							</p>
 						)}
 
-						<div className="mt-3 flex items-center justify-between gap-2">
+						<div className="mt-1 ml-4 flex items-center justify-between gap-2">
 							<div>
 								{hasReplies ? (
 									<button
@@ -175,9 +174,8 @@ function CommentCard({
 									type="button"
 									variant="ghost"
 									size="sm"
-									className={`gap-1.5 text-muted-foreground transition-colors hover:text-rose-500 ${
-										comment.isLiked ? "text-rose-500" : ""
-									}`}
+									className={`gap-1.5 text-muted-foreground transition-colors hover:text-rose-500 ${comment.isLiked ? "text-rose-500" : ""
+										}`}
 									onClick={() => onToggleLike(comment.id)}
 									disabled={pendingLikeIds.has(comment.id)}
 								>
@@ -204,7 +202,7 @@ function CommentCard({
 			</div>
 
 			{hasReplies && showReplies ? (
-				<div className="mt-6 space-y-3">
+				<div className="mt-6 ml-8 space-y-3">
 					{replies.map((reply) => (
 						<CommentCard
 							key={reply.id}

@@ -15,7 +15,7 @@ import { toast } from "sonner"
 import { followUser, unfollowUser } from "@/actions/follow.actions"
 import ProfileConnections from "@/components/profile/profile-connections"
 import { getEchoesByUsername } from "@/actions/feed.actions"
-import { BookmarkIcon, HeartIcon, MessageCircleIcon, Send } from "lucide-react"
+import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/$username")({
@@ -191,11 +191,6 @@ function RouteComponent() {
                             icon={MessageCircleIcon}
                             value={post.commentCount}
                             colorClassName="text-green-400"
-                          />
-                          <Metric
-                            icon={Send}
-                            value={post.shareCount}
-                            colorClassName="text-yellow-400"
                           />
                           <Metric
                             icon={BookmarkIcon}

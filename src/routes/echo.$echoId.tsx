@@ -5,7 +5,6 @@ import {
   BookmarkIcon,
   HeartIcon,
   MessageCircleIcon,
-  Send,
   ArrowLeftIcon,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -216,12 +215,6 @@ function EchoDetailPage({ echo }: { echo?: FeedEcho | null }) {
               icon={MessageCircleIcon}
               count={currentEcho.commentCount}
               label="Comments"
-              disabled
-            />
-            <ActionStack
-              icon={Send}
-              count={currentEcho.shareCount}
-              label="Shares"
               disabled
             />
             <ActionStack
