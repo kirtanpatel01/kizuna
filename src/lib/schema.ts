@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   date,
+  foreignKey,
   index,
   integer,
   pgTable,
@@ -163,7 +164,10 @@ export const echoComment = pgTable(
     authorId: text("author_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    parentId: text("parent_id"),
     content: text("content").notNull(),
+    replyCount: integer("reply_count").default(0).notNull(),
+    likeCount: integer("like_count").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -173,7 +177,31 @@ export const echoComment = pgTable(
   (table) => [
     index("echo_comment_echoId_idx").on(table.echoId),
     index("echo_comment_authorId_idx").on(table.authorId),
+    index("echo_comment_parentId_idx").on(table.parentId),
     index("echo_comment_createdAt_idx").on(table.createdAt),
+    foreignKey({
+      columns: [table.parentId],
+      foreignColumns: [table.id],
+    }).onDelete("cascade"),
+  ],
+);
+
+export const commentLike = pgTable(
+  "comment_like",
+  {
+    id: text("id").primaryKey(),
+    commentId: text("comment_id")
+      .notNull()
+      .references(() => echoComment.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("comment_like_commentId_idx").on(table.commentId),
+    index("comment_like_userId_idx").on(table.userId),
+    uniqueIndex("comment_like_unique_idx").on(table.commentId, table.userId),
   ],
 );
 
@@ -206,6 +234,7 @@ export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   echoes: many(echo),
   echoComments: many(echoComment),
+  commentLikes: many(commentLike),
   echoInteractions: many(echoInteraction),
   followers: many(follow, { relationName: "following" }),
   following: many(follow, { relationName: "follower" }),
@@ -234,13 +263,33 @@ export const echoRelations = relations(echo, ({ one, many }) => ({
   interactions: many(echoInteraction),
 }));
 
-export const echoCommentRelations = relations(echoComment, ({ one }) => ({
+export const echoCommentRelations = relations(echoComment, ({ one, many }) => ({
   echo: one(echo, {
     fields: [echoComment.echoId],
     references: [echo.id],
   }),
   author: one(user, {
     fields: [echoComment.authorId],
+    references: [user.id],
+  }),
+  parent: one(echoComment, {
+    fields: [echoComment.parentId],
+    references: [echoComment.id],
+    relationName: "comment_parent",
+  }),
+  replies: many(echoComment, {
+    relationName: "comment_parent",
+  }),
+  likes: many(commentLike),
+}));
+
+export const commentLikeRelations = relations(commentLike, ({ one }) => ({
+  comment: one(echoComment, {
+    fields: [commentLike.commentId],
+    references: [echoComment.id],
+  }),
+  user: one(user, {
+    fields: [commentLike.userId],
     references: [user.id],
   }),
 }));

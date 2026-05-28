@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
 import {
   BookmarkIcon,
   HeartIcon,
-  MessageCircleIcon,
   Send,
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
-import { toast } from "sonner"
 
 import { getPostedEchoes, type FeedEcho } from "@/actions/feed.actions"
-import { toggleLike, toggleSave } from "@/actions/interactions.actions"
+import { useFeed } from "@/hooks/use-feed"
+import CommentSheet from "@/components/feed/comment-sheet"
 
 export const Route = createFileRoute("/feed")({
   loader: async () => getPostedEchoes(),
@@ -20,123 +17,13 @@ export const Route = createFileRoute("/feed")({
 
 function RouteComponent() {
   const initialEchoes = Route.useLoaderData() as FeedEcho[]
-  const [echoes, setEchoes] = useState<FeedEcho[]>(initialEchoes)
-  const [pendingLikeIds, setPendingLikeIds] = useState<Set<string>>(new Set())
-  const [pendingSaveIds, setPendingSaveIds] = useState<Set<string>>(new Set())
-
-  const likeMutation = useMutation({
-    mutationFn: async (echoId: string) => toggleLike({ data: { echoId } }),
-    onMutate: async (echoId) => {
-      let previousEchoes: FeedEcho[] = []
-
-      setPendingLikeIds((current) => new Set(current).add(echoId))
-
-      setEchoes((current) => {
-        previousEchoes = current
-
-        return current.map((echo) => {
-          if (echo.id !== echoId) return echo
-
-          const nextLiked = !Boolean(echo.isLiked)
-          const nextLikeCount = Math.max(echo.likeCount + (nextLiked ? 1 : -1), 0)
-
-          return {
-            ...echo,
-            isLiked: nextLiked,
-            likeCount: nextLikeCount,
-          }
-        })
-      })
-
-      return { previousEchoes, echoId }
-    },
-    onSuccess: (result) => {
-      setEchoes((current) =>
-        current.map((echo) =>
-          echo.id === result.echoId
-            ? {
-                ...echo,
-                likeCount: result.likeCount,
-                isLiked: result.active,
-              }
-            : echo
-        )
-      )
-    },
-    onError: (error, _echoId, context) => {
-      if (context?.previousEchoes) {
-        setEchoes(context.previousEchoes)
-      }
-
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update like"
-      )
-    },
-    onSettled: (_data, _error, echoId) => {
-      setPendingLikeIds((current) => {
-        const next = new Set(current)
-        next.delete(echoId)
-        return next
-      })
-    },
-  })
-
-  const saveMutation = useMutation({
-    mutationFn: async (echoId: string) => toggleSave({ data: { echoId } }),
-    onMutate: async (echoId) => {
-      let previousEchoes: FeedEcho[] = []
-
-      setPendingSaveIds((current) => new Set(current).add(echoId))
-
-      setEchoes((current) => {
-        previousEchoes = current
-
-        return current.map((echo) => {
-          if (echo.id !== echoId) return echo
-
-          const nextSaved = !Boolean(echo.isSaved)
-          const nextSaveCount = Math.max(echo.saveCount + (nextSaved ? 1 : -1), 0)
-
-          return {
-            ...echo,
-            isSaved: nextSaved,
-            saveCount: nextSaveCount,
-          }
-        })
-      })
-
-      return { previousEchoes, echoId }
-    },
-    onSuccess: (result) => {
-      setEchoes((current) =>
-        current.map((echo) =>
-          echo.id === result.echoId
-            ? {
-                ...echo,
-                saveCount: result.saveCount,
-                isSaved: result.active,
-              }
-            : echo
-        )
-      )
-    },
-    onError: (error, _echoId, context) => {
-      if (context?.previousEchoes) {
-        setEchoes(context.previousEchoes)
-      }
-
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update save"
-      )
-    },
-    onSettled: (_data, _error, echoId) => {
-      setPendingSaveIds((current) => {
-        const next = new Set(current)
-        next.delete(echoId)
-        return next
-      })
-    },
-  })
+  const {
+    echoes,
+    pendingLikeIds,
+    pendingSaveIds,
+    handleLike,
+    handleSave,
+  } = useFeed(initialEchoes)
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background">
@@ -189,17 +76,14 @@ function RouteComponent() {
                     ? "text-rose-500"
                     : "text-slate-500 hover:text-rose-500"
                 }`}
-                onClick={() => likeMutation.mutate(echo.id)}
+                onClick={() => handleLike(echo.id)}
                 disabled={pendingLikeIds.has(echo.id)}
                 aria-pressed={Boolean(echo.isLiked)}
               >
                 <HeartIcon size={16} className={echo.isLiked ? "fill-current" : ""} />
                 <span>{echo.likeCount}</span>
               </button>
-              <div className="flex cursor-pointer items-center gap-1 text-slate-500 hover:text-blue-500">
-                <MessageCircleIcon size={16} />
-                <span>{echo.commentCount}</span>
-              </div>
+              <CommentSheet echoId={echo.id} commentCount={echo.commentCount} />
               <div className="flex cursor-pointer items-center gap-1 text-slate-500 hover:text-green-500">
                 <Send size={16} />
                 <span>{echo.shareCount}</span>
@@ -211,7 +95,7 @@ function RouteComponent() {
                     ? "text-sky-500"
                     : "text-slate-500 hover:text-sky-500"
                 }`}
-                onClick={() => saveMutation.mutate(echo.id)}
+                onClick={() => handleSave(echo.id)}
                 disabled={pendingSaveIds.has(echo.id)}
                 aria-pressed={Boolean(echo.isSaved)}
               >
