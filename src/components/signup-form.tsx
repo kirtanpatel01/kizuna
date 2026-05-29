@@ -188,7 +188,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     />
                     <InputGroupAddon align={"inline-end"}>
                       <Button
-                        variant="secondary"
+                        variant="ghost"
                         size="icon"
                         onClick={() =>
                           setPasswordVisible((visible) => !visible)
@@ -225,7 +225,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     />
                     <InputGroupAddon align={"inline-end"}>
                       <Button
-                        variant="secondary"
+                        variant="ghost"
                         size="icon"
                         onClick={() =>
                           setConfirmPasswordVisible((visible) => !visible)

@@ -11,7 +11,7 @@ import { AccountHeader } from "@/components/account/account-header"
 import { AccountInfoField } from "@/components/account/account-info-field"
 import { Button } from "@/components/ui/button"
 
-export const Route = createFileRoute("/account")({
+export const Route = createFileRoute("/(authed)/account")({
   component: RouteComponent,
 })
 

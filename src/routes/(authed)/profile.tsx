@@ -10,7 +10,7 @@ import {
 import { AccountProvider } from "@/providers/account-provider"
 import { getCurrentUser } from "@/actions/auth.actions"
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/(authed)/profile")({
   loader: async () => {
     const user = await getCurrentUser()
     return { user }

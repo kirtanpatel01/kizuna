@@ -18,7 +18,7 @@ import { getEchoesByUsername } from "@/actions/feed.actions"
 import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/$username")({
+export const Route = createFileRoute("/(authed)/$username")({
   loader: async ({ params }) => {
     const [profile, feed] = await Promise.all([
       getPublicProfile({ data: { username: params.username } }),

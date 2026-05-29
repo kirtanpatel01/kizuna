@@ -20,7 +20,7 @@ import {
 import { getEchoById, type FeedEcho } from "@/actions/feed.actions"
 import { toggleLike, toggleSave } from "@/actions/interactions.actions"
 
-export const Route = createFileRoute("/echo/$echoId")({
+export const Route = createFileRoute("/(authed)/echo/$echoId")({
   loader: async ({ params }) => {
     return getEchoById({ data: { echoId: params.echoId } })
   },
@@ -253,7 +253,7 @@ function ActionStack({
   return (
     <button
       type="button"
-      className={`flex flex-col items-center gap-2 rounded-2xl border px-3 py-2 transition-colors ${
+      className={`flex flex-col items-center gap-2 rounded-2xl border px-3 py-2  ${
         active
           ? activeClassName
           : "bg-muted/30 text-muted-foreground hover:bg-muted/50"

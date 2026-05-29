@@ -2,7 +2,7 @@ import { Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/components/theme-provider'
 
-export function ModeToggle() {
+export function ModeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
 
   const next = (current: string) => {
@@ -15,12 +15,13 @@ export function ModeToggle() {
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="icon"
       onClick={() => setTheme(next(theme))}
       aria-label="Toggle theme"
+      className={className}
     >
-      <Icon className="h-[1.2rem] w-[1.2rem]" />
+      <Icon />
     </Button>
   )
 }

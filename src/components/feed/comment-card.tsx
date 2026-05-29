@@ -179,7 +179,7 @@ function CommentCard({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className={`gap-1.5 text-muted-foreground transition-colors hover:text-rose-500 ${
+                  className={`gap-1.5 text-muted-foreground  hover:text-rose-500 ${
                     comment.isLiked ? "text-rose-500" : ""
                   }`}
                   onClick={() => onToggleLike(comment.id)}
@@ -195,7 +195,7 @@ function CommentCard({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="gap-1.5 text-muted-foreground transition-colors hover:text-primary"
+                  className="gap-1.5 text-muted-foreground  hover:text-primary"
                   onClick={() => onReply(comment)}
                 >
                   <Reply size={16} />

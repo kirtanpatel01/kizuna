@@ -107,7 +107,7 @@ export function ProfileDetails() {
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center justify-center text-muted-foreground  hover:text-foreground"
                 aria-label="Edit date of birth"
               >
                 <PencilIcon className="size-4" />
@@ -152,7 +152,7 @@ export function ProfileDetails() {
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center justify-center text-muted-foreground  hover:text-foreground"
                 aria-label="Edit gender"
               >
                 <PencilIcon className="size-4" />
@@ -192,7 +192,7 @@ export function ProfileDetails() {
           {!editingBio ? (
             <button
               type="button"
-              className="inline-flex items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center justify-center text-muted-foreground  hover:text-foreground"
               aria-label="Edit bio"
               onClick={() => {
                 setDraftBio(currentBio ?? "")

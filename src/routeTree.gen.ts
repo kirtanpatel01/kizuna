@@ -10,25 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as LeaderboardRouteImport } from './routes/leaderboard'
-import { Route as FeedRouteImport } from './routes/feed'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as UsernameRouteImport } from './routes/$username'
+import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EchoEchoIdRouteImport } from './routes/echo.$echoId'
+import { Route as authedProfileRouteImport } from './routes/(authed)/profile'
+import { Route as authedLeaderboardRouteImport } from './routes/(authed)/leaderboard'
+import { Route as authedKirtanRouteImport } from './routes/(authed)/kirtan'
+import { Route as authedFeedRouteImport } from './routes/(authed)/feed'
+import { Route as authedAccountRouteImport } from './routes/(authed)/account'
+import { Route as authedUsernameRouteImport } from './routes/(authed)/$username'
 import { Route as ApiLeaderboardSubscribeRouteImport } from './routes/api/leaderboard/subscribe'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authedEchoEchoIdRouteImport } from './routes/(authed)/echo.$echoId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -36,24 +33,8 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LeaderboardRoute = LeaderboardRouteImport.update({
-  id: '/leaderboard',
-  path: '/leaderboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeedRoute = FeedRouteImport.update({
-  id: '/feed',
-  path: '/feed',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsernameRoute = UsernameRouteImport.update({
-  id: '/$username',
-  path: '/$username',
+const authedRouteRoute = authedRouteRouteImport.update({
+  id: '/(authed)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,10 +42,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EchoEchoIdRoute = EchoEchoIdRouteImport.update({
-  id: '/echo/$echoId',
-  path: '/echo/$echoId',
-  getParentRoute: () => rootRouteImport,
+const authedProfileRoute = authedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedLeaderboardRoute = authedLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedKirtanRoute = authedKirtanRouteImport.update({
+  id: '/kirtan',
+  path: '/kirtan',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedFeedRoute = authedFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedAccountRoute = authedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedUsernameRoute = authedUsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
+  getParentRoute: () => authedRouteRoute,
 } as any)
 const ApiLeaderboardSubscribeRoute = ApiLeaderboardSubscribeRouteImport.update({
   id: '/api/leaderboard/subscribe',
@@ -76,44 +82,53 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authedEchoEchoIdRoute = authedEchoEchoIdRouteImport.update({
+  id: '/echo/$echoId',
+  path: '/echo/$echoId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/account': typeof AccountRoute
-  '/feed': typeof FeedRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
-  '/echo/$echoId': typeof EchoEchoIdRoute
+  '/$username': typeof authedUsernameRoute
+  '/account': typeof authedAccountRoute
+  '/feed': typeof authedFeedRoute
+  '/kirtan': typeof authedKirtanRoute
+  '/leaderboard': typeof authedLeaderboardRoute
+  '/profile': typeof authedProfileRoute
+  '/echo/$echoId': typeof authedEchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/account': typeof AccountRoute
-  '/feed': typeof FeedRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
-  '/echo/$echoId': typeof EchoEchoIdRoute
+  '/$username': typeof authedUsernameRoute
+  '/account': typeof authedAccountRoute
+  '/feed': typeof authedFeedRoute
+  '/kirtan': typeof authedKirtanRoute
+  '/leaderboard': typeof authedLeaderboardRoute
+  '/profile': typeof authedProfileRoute
+  '/echo/$echoId': typeof authedEchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$username': typeof UsernameRoute
-  '/account': typeof AccountRoute
-  '/feed': typeof FeedRoute
-  '/leaderboard': typeof LeaderboardRoute
+  '/(authed)': typeof authedRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
-  '/echo/$echoId': typeof EchoEchoIdRoute
+  '/(authed)/$username': typeof authedUsernameRoute
+  '/(authed)/account': typeof authedAccountRoute
+  '/(authed)/feed': typeof authedFeedRoute
+  '/(authed)/kirtan': typeof authedKirtanRoute
+  '/(authed)/leaderboard': typeof authedLeaderboardRoute
+  '/(authed)/profile': typeof authedProfileRoute
+  '/(authed)/echo/$echoId': typeof authedEchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
@@ -121,54 +136,53 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/signup'
     | '/$username'
     | '/account'
     | '/feed'
+    | '/kirtan'
     | '/leaderboard'
-    | '/login'
     | '/profile'
-    | '/signup'
     | '/echo/$echoId'
     | '/api/auth/$'
     | '/api/leaderboard/subscribe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/signup'
     | '/$username'
     | '/account'
     | '/feed'
+    | '/kirtan'
     | '/leaderboard'
-    | '/login'
     | '/profile'
-    | '/signup'
     | '/echo/$echoId'
     | '/api/auth/$'
     | '/api/leaderboard/subscribe'
   id:
     | '__root__'
     | '/'
-    | '/$username'
-    | '/account'
-    | '/feed'
-    | '/leaderboard'
+    | '/(authed)'
     | '/login'
-    | '/profile'
     | '/signup'
-    | '/echo/$echoId'
+    | '/(authed)/$username'
+    | '/(authed)/account'
+    | '/(authed)/feed'
+    | '/(authed)/kirtan'
+    | '/(authed)/leaderboard'
+    | '/(authed)/profile'
+    | '/(authed)/echo/$echoId'
     | '/api/auth/$'
     | '/api/leaderboard/subscribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  UsernameRoute: typeof UsernameRoute
-  AccountRoute: typeof AccountRoute
-  FeedRoute: typeof FeedRoute
-  LeaderboardRoute: typeof LeaderboardRoute
+  authedRouteRoute: typeof authedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
-  ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
-  EchoEchoIdRoute: typeof EchoEchoIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiLeaderboardSubscribeRoute: typeof ApiLeaderboardSubscribeRoute
 }
@@ -182,13 +196,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -196,32 +203,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/leaderboard': {
-      id: '/leaderboard'
-      path: '/leaderboard'
-      fullPath: '/leaderboard'
-      preLoaderRoute: typeof LeaderboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/feed': {
-      id: '/feed'
-      path: '/feed'
-      fullPath: '/feed'
-      preLoaderRoute: typeof FeedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$username': {
-      id: '/$username'
-      path: '/$username'
-      fullPath: '/$username'
-      preLoaderRoute: typeof UsernameRouteImport
+    '/(authed)': {
+      id: '/(authed)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -231,12 +217,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/echo/$echoId': {
-      id: '/echo/$echoId'
-      path: '/echo/$echoId'
-      fullPath: '/echo/$echoId'
-      preLoaderRoute: typeof EchoEchoIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/(authed)/profile': {
+      id: '/(authed)/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof authedProfileRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/leaderboard': {
+      id: '/(authed)/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof authedLeaderboardRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/kirtan': {
+      id: '/(authed)/kirtan'
+      path: '/kirtan'
+      fullPath: '/kirtan'
+      preLoaderRoute: typeof authedKirtanRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/feed': {
+      id: '/(authed)/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof authedFeedRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/account': {
+      id: '/(authed)/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof authedAccountRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/$username': {
+      id: '/(authed)/$username'
+      path: '/$username'
+      fullPath: '/$username'
+      preLoaderRoute: typeof authedUsernameRouteImport
+      parentRoute: typeof authedRouteRoute
     }
     '/api/leaderboard/subscribe': {
       id: '/api/leaderboard/subscribe'
@@ -252,19 +273,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authed)/echo/$echoId': {
+      id: '/(authed)/echo/$echoId'
+      path: '/echo/$echoId'
+      fullPath: '/echo/$echoId'
+      preLoaderRoute: typeof authedEchoEchoIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
   }
 }
 
+interface authedRouteRouteChildren {
+  authedUsernameRoute: typeof authedUsernameRoute
+  authedAccountRoute: typeof authedAccountRoute
+  authedFeedRoute: typeof authedFeedRoute
+  authedKirtanRoute: typeof authedKirtanRoute
+  authedLeaderboardRoute: typeof authedLeaderboardRoute
+  authedProfileRoute: typeof authedProfileRoute
+  authedEchoEchoIdRoute: typeof authedEchoEchoIdRoute
+}
+
+const authedRouteRouteChildren: authedRouteRouteChildren = {
+  authedUsernameRoute: authedUsernameRoute,
+  authedAccountRoute: authedAccountRoute,
+  authedFeedRoute: authedFeedRoute,
+  authedKirtanRoute: authedKirtanRoute,
+  authedLeaderboardRoute: authedLeaderboardRoute,
+  authedProfileRoute: authedProfileRoute,
+  authedEchoEchoIdRoute: authedEchoEchoIdRoute,
+}
+
+const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
+  authedRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  UsernameRoute: UsernameRoute,
-  AccountRoute: AccountRoute,
-  FeedRoute: FeedRoute,
-  LeaderboardRoute: LeaderboardRoute,
+  authedRouteRoute: authedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
-  ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
-  EchoEchoIdRoute: EchoEchoIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiLeaderboardSubscribeRoute: ApiLeaderboardSubscribeRoute,
 }

@@ -120,7 +120,6 @@ export function LoginForm({
   }
 
   const handleMailToggle = () => {
-    console.log("Toggling login method. Current withEmail:", withEmail)
     setWithEmail((prev) => !prev)
     // form.clearErrors(["email", "username"])
   }
@@ -149,7 +148,7 @@ export function LoginForm({
                       <Button
                         type="button"
                         onClick={handleMailToggle}
-                        // variant="link"
+                        variant="link"
                         size="xs"
                       >
                         {withEmail ? "Use Username" : "Use Email"}
@@ -197,7 +196,7 @@ export function LoginForm({
                       />
                       <InputGroupAddon align={"inline-end"}>
                         <Button
-                          variant="secondary"
+                          variant="ghost"
                           size="icon"
                           onClick={() => setPasswordVisible((v) => !v)}
                           type="button"

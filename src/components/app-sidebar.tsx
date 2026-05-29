@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link } from "@tanstack/react-router"
 import {
   Sidebar,
   SidebarContent,
@@ -10,30 +10,30 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
-} from './ui/sidebar'
-import { CircleUserRound, Club, Hexagon, Trophy, UserCog } from 'lucide-react'
-import { ModeToggle } from './mode-toggle'
+} from "./ui/sidebar"
+import { CircleUserRound, Club, Hexagon, Trophy, UserCog } from "lucide-react"
+import { ModeToggle } from "./mode-toggle"
 
 function AppSidebar() {
   const links = [
     {
-      name: 'Feed',
-      href: '/feed',
+      name: "Feed",
+      href: "/feed",
       icon: <Hexagon />,
     },
     {
-      name: 'Leaderboard',
-      href: '/leaderboard',
+      name: "Leaderboard",
+      href: "/leaderboard",
       icon: <Trophy />,
     },
     {
-      name: 'Profile',
-      href: '/profile',
+      name: "Profile",
+      href: "/profile",
       icon: <CircleUserRound />,
     },
     {
-      name: 'Account',
-      href: '/account',
+      name: "Account",
+      href: "/account",
       icon: <UserCog />,
     },
   ]
@@ -41,12 +41,12 @@ function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="flex justify-between">
-          <SidebarMenuButton className="text-primary">
+        <Link to="/" className="flex justify-between">
+          <SidebarMenuButton>
             <Club />
             <span className="font-bold">Greem</span>
           </SidebarMenuButton>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -64,11 +64,9 @@ function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <div className="flex w-full items-center justify-between gap-2">
-          <ModeToggle />
-          <SidebarTrigger className="self-end" />
-        </div>
+      <SidebarFooter className="flex flex-row group-data-[collapsible=icon]:flex-col justify-between">
+        <ModeToggle />
+        <SidebarTrigger />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -9,7 +9,7 @@ import { getPostedEchoes, type FeedEcho } from "@/actions/feed.actions"
 import { useFeed } from "@/hooks/use-feed"
 import CommentSheet from "@/components/feed/comment-sheet"
 
-export const Route = createFileRoute("/feed")({
+export const Route = createFileRoute("/(authed)/feed")({
   loader: async () => getPostedEchoes(),
   component: RouteComponent,
 })
@@ -70,7 +70,7 @@ function RouteComponent() {
             <footer className="mt-2 flex items-center justify-end gap-10 text-sm">
               <button
                 type="button"
-                className={`flex items-center gap-1 transition-colors ${
+                className={`flex items-center gap-1  ${
                   echo.isLiked
                     ? "text-rose-500"
                     : "text-slate-500 hover:text-rose-500"
@@ -85,7 +85,7 @@ function RouteComponent() {
               <CommentSheet echoId={echo.id} commentCount={echo.commentCount} />
               <button
                 type="button"
-                className={`flex items-center gap-1 transition-colors ${
+                className={`flex items-center gap-1  ${
                   echo.isSaved
                     ? "text-sky-500"
                     : "text-slate-500 hover:text-sky-500"

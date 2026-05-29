@@ -4,9 +4,6 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 
 import appCss from "../styles.css?url"
 import { Toaster } from "@/components/ui/sonner"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import AppSidebar from "@/components/app-sidebar"
 import { ThemeProvider } from '@/components/theme-provider'
 import { QueryProvider } from '@/providers/query-provider'
 
@@ -49,18 +46,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
           <QueryProvider>
-            <TooltipProvider>
-              <SidebarProvider
-                style={
-                  {
-                    "--sidebar-width": "12rem",
-                  } as React.CSSProperties
-                }
-              >
-                <AppSidebar />
-                <main className="w-full">{children}</main>
-              </SidebarProvider>
-            </TooltipProvider>
+            {children}
           </QueryProvider>
         </ThemeProvider>
         <Toaster richColors />

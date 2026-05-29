@@ -55,7 +55,7 @@ function CommentSheet({
 
   return (
     <Sheet>
-      <SheetTrigger className="flex cursor-pointer items-center gap-1 text-slate-500 transition-colors hover:text-primary">
+      <SheetTrigger className="flex cursor-pointer items-center gap-1 text-slate-500  hover:text-primary">
         <MessageCircle size={16} />
         <span>{threadCommentCount}</span>
       </SheetTrigger>

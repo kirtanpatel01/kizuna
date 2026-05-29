@@ -20,7 +20,7 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination"
 
-export const Route = createFileRoute("/leaderboard")({
+export const Route = createFileRoute("/(authed)/leaderboard")({
 	loader: async () => getLeaderboardData(),
 	component: LeaderboardRoute,
 })
