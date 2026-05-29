@@ -43,16 +43,14 @@ function createRedisClient() {
 	const client = new Redis(buildRedisOptions(process.env.REDIS_URL ?? "redis://127.0.0.1:6379"))
 
 	client.on("error", (error) => {
-		if (process.env.NODE_ENV !== "test") {
 			console.warn("[redis] connection error:", error instanceof Error ? error.message : error)
-		}
 	})
 
 	return client
 }
 
-export const redis = globalRedis.__kizunaRedis ?? createRedisClient()
+export const redis = globalRedis.__greemRedis ?? createRedisClient()
 
-if (!globalRedis.__kizunaRedis) {
-	globalRedis.__kizunaRedis = redis
+if (!globalRedis.__greemRedis) {
+	globalRedis.__greemRedis = redis
 }
