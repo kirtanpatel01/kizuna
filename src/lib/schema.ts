@@ -85,6 +85,21 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const feedbackSubmission = pgTable(
+  "feedback_submission",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    message: text("message").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("feedback_submission_createdAt_idx").on(table.createdAt),
+    index("feedback_submission_email_idx").on(table.email),
+  ],
+);
+
 export const profileGender = pgEnum("profile_gender", [
   "male",
   "female",

@@ -11,6 +11,21 @@ import { AccountProvider } from "@/providers/account-provider"
 import { getCurrentUser } from "@/actions/auth.actions"
 
 export const Route = createFileRoute("/(authed)/profile")({
+  head: () => ({
+    meta: [
+      {
+        title: "My profile | Greem",
+      },
+      {
+        name: "description",
+        content: "Review your profile echoes, avatar, and account information on Greem.",
+      },
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   loader: async () => {
     const user = await getCurrentUser()
     return { user }

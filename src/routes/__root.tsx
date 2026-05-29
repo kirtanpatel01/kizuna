@@ -18,10 +18,64 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Greem",
+      },
+      {
+        name: "description",
+        content:
+          "Greem is a Redis-powered social platform for short posts, live rankings, and profile-driven discovery.",
+      },
+      {
+        name: "theme-color",
+        content: "#c70036",
+      },
+      {
+        property: "og:title",
+        content: "Greem",
+      },
+      {
+        property: "og:description",
+        content:
+          "Greem is a Redis-powered social platform for short posts, live rankings, and profile-driven discovery.",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:title",
+        content: "Greem",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Greem is a Redis-powered social platform for short posts, live rankings, and profile-driven discovery.",
       },
     ],
     links: [
+      {
+        rel: "icon",
+        href: "/greem.svg",
+        type: "image/svg+xml",
+      },
+      {
+        rel: "shortcut icon",
+        href: "/greem.svg",
+        type: "image/svg+xml",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/greem.svg",
+        type: "image/svg+xml",
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
       {
         rel: "stylesheet",
         href: appCss,

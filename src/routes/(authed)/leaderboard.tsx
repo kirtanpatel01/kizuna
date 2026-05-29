@@ -21,6 +21,21 @@ import {
 } from "@/components/ui/pagination"
 
 export const Route = createFileRoute("/(authed)/leaderboard")({
+	head: () => ({
+	  meta: [
+	    {
+	      title: "Leaderboard | Greem",
+	    },
+	    {
+	      name: "description",
+	      content: "See the latest all-time and weekly rankings on Greem.",
+	    },
+	    {
+	      name: "robots",
+	      content: "noindex,nofollow",
+	    },
+	  ],
+	}),
 	loader: async () => getLeaderboardData(),
 	component: LeaderboardRoute,
 })

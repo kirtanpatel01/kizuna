@@ -21,6 +21,21 @@ import { getEchoById, type FeedEcho } from "@/actions/feed.actions"
 import { toggleLike, toggleSave } from "@/actions/interactions.actions"
 
 export const Route = createFileRoute("/(authed)/echo/$echoId")({
+  head: ({ params }) => ({
+    meta: [
+      {
+        title: `Echo ${params.echoId} | Greem`,
+      },
+      {
+        name: "description",
+        content: "Open an individual Greem post to view its reactions and engagement.",
+      },
+      {
+        name: "robots",
+        content: "index,follow",
+      },
+    ],
+  }),
   loader: async ({ params }) => {
     return getEchoById({ data: { echoId: params.echoId } })
   },

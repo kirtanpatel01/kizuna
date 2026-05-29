@@ -12,6 +12,21 @@ import { AccountInfoField } from "@/components/account/account-info-field"
 import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute("/(authed)/account")({
+  head: () => ({
+    meta: [
+      {
+        title: "Account | Greem",
+      },
+      {
+        name: "description",
+        content: "Manage your Greem account details, email, and avatar.",
+      },
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

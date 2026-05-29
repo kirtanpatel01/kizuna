@@ -19,6 +19,21 @@ import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(authed)/$username")({
+  head: ({ params }) => ({
+    meta: [
+      {
+        title: `@${params.username} | Greem`,
+      },
+      {
+        name: "description",
+        content: `View @${params.username}'s public profile, posts, and follower activity on Greem.`,
+      },
+      {
+        name: "robots",
+        content: "index,follow",
+      },
+    ],
+  }),
   loader: async ({ params }) => {
     const [profile, feed] = await Promise.all([
       getPublicProfile({ data: { username: params.username } }),

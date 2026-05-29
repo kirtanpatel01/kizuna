@@ -4,6 +4,14 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(authed)")({
+  head: () => ({
+    meta: [
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

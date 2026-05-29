@@ -5,6 +5,21 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
+  head: () => ({
+    meta: [
+      {
+        title: "Login | Greem",
+      },
+      {
+        name: "description",
+        content: "Sign in to your Greem account to post, follow, and react.",
+      },
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

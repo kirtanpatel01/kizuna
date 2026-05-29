@@ -5,6 +5,21 @@ import { SignupForm } from "@/components/signup-form"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/signup")({
+  head: () => ({
+    meta: [
+      {
+        title: "Sign up | Greem",
+      },
+      {
+        name: "description",
+        content: "Create a Greem account to join the feed, follow users, and post echoes.",
+      },
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

@@ -10,6 +10,21 @@ import { useFeed } from "@/hooks/use-feed"
 import CommentSheet from "@/components/feed/comment-sheet"
 
 export const Route = createFileRoute("/(authed)/feed")({
+  head: () => ({
+    meta: [
+      {
+        title: "Feed | Greem",
+      },
+      {
+        name: "description",
+        content: "Browse the latest posts from people you follow on Greem.",
+      },
+      {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+    ],
+  }),
   loader: async () => getPostedEchoes(),
   component: RouteComponent,
 })

@@ -1,22 +1,42 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
 
-export const Route = createFileRoute("/")({ component: App })
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      {
+        title: "Greem ",
+      },
+      {
+        name: "description",
+        content:
+          "Discover Greem, a social platform for short posts, follows, reactions, and a live Redis leaderboard.",
+      },
+      {
+        name: "robots",
+        content: "index,follow",
+      },
+    ],
+  }),
+  component: App,
+})
 
 function App() {
   return (
     <div className="relative">
-      <div className="absolute top-8 flex w-full justify-center">
+      <div className="absolute top-8 flex w-full items-center justify-center">
         <a href="https://github.com/kirtanpatel01/greem" target="_blank">
-          <button className="bg-white text-black hover:bg-white/80 flex items-center gap-2 px-2 py-1">
-          Github
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
-            alt="github-logo"
-            className="size-6"
-          />
-        </button>
+          <button className="flex items-center gap-2 bg-white text-black border border-black dark:border-white px-2 py-1">
+            Github
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
+              alt="github-logo"
+              className="size-6"
+            />
+          </button>
         </a>
+        <ModeToggle className="ring-black dark:ring-white" />
       </div>
       <div className="absolute top-28 right-32 w-full max-w-72 space-y-2 border p-4 text-center">
         <div className="font-semibol w-full border-b border-primary/50 pb-2 text-lg">
@@ -49,6 +69,17 @@ function App() {
           in real-time using Redis sorted sets.
         </p>
       </div>
+
+      <div className="absolute bottom-28 right-48 space-y-2 border p-4 text-center">
+        <div className="font-semibol w-full border-b border-primary/50 pb-2 text-lg">Have thoughts ?</div>
+        <div className="max-w-48 text-sm text-muted-foreground">
+          Drop a quick note, idea, or bug report. We read every message.
+        </div>
+        <Button variant="outline">
+          <Link to="/feedback">feedback</Link>
+        </Button>
+      </div>
+
       <div className="flex min-h-svh flex-col items-center justify-center">
         <h1 className="cursor-default text-[10rem] font-black transition-colors duration-500 hover:text-primary">
           Greem
