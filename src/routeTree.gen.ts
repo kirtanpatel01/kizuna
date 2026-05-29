@@ -18,6 +18,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as UsernameRouteImport } from './routes/$username'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EchoEchoIdRouteImport } from './routes/echo.$echoId'
+import { Route as ApiLeaderboardSubscribeRouteImport } from './routes/api/leaderboard/subscribe'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SignupRoute = SignupRouteImport.update({
@@ -65,6 +66,11 @@ const EchoEchoIdRoute = EchoEchoIdRouteImport.update({
   path: '/echo/$echoId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLeaderboardSubscribeRoute = ApiLeaderboardSubscribeRouteImport.update({
+  id: '/api/leaderboard/subscribe',
+  path: '/api/leaderboard/subscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/echo/$echoId': typeof EchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/echo/$echoId': typeof EchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/echo/$echoId': typeof EchoEchoIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/leaderboard/subscribe': typeof ApiLeaderboardSubscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/echo/$echoId'
     | '/api/auth/$'
+    | '/api/leaderboard/subscribe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/echo/$echoId'
     | '/api/auth/$'
+    | '/api/leaderboard/subscribe'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/echo/$echoId'
     | '/api/auth/$'
+    | '/api/leaderboard/subscribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   EchoEchoIdRoute: typeof EchoEchoIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiLeaderboardSubscribeRoute: typeof ApiLeaderboardSubscribeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EchoEchoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/leaderboard/subscribe': {
+      id: '/api/leaderboard/subscribe'
+      path: '/api/leaderboard/subscribe'
+      fullPath: '/api/leaderboard/subscribe'
+      preLoaderRoute: typeof ApiLeaderboardSubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   EchoEchoIdRoute: EchoEchoIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiLeaderboardSubscribeRoute: ApiLeaderboardSubscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

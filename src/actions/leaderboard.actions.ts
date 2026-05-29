@@ -9,7 +9,7 @@ import {
 	getUserRank,
 	type LeaderboardPostEntry,
 	type LeaderboardUserEntry,
-} from "@/lib/leaderboard.server"
+} from "@/lib/leaderboard"
 
 export type LeaderboardBoardSnapshot = {
 	weekKey: string | null

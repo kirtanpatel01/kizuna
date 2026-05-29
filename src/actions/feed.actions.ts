@@ -4,7 +4,7 @@ import { and, desc, eq, inArray } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { recordPostCreated, recordPostDeleted } from "@/lib/leaderboard.server"
+import { recordPostCreated, recordPostDeleted } from "@/lib/leaderboard"
 import { echo, echoInteraction, user } from "@/lib/schema"
 
 const MAX_ECHO_LENGTH = 280

@@ -5,7 +5,7 @@ import { and, eq, sql } from "drizzle-orm"
 
 import { formatCreatedAtLabel, getViewerId, type EchoCommentNode } from "@/lib/comment.shared"
 import { db } from "@/lib/db"
-import { recordCommentEngagement } from "@/lib/leaderboard.server"
+import { recordCommentEngagement } from "@/lib/leaderboard"
 import { echo, echoComment, user } from "@/lib/schema"
 
 const MAX_COMMENT_LENGTH = 500

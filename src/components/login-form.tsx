@@ -119,6 +119,12 @@ export function LoginForm({
     }
   }
 
+  const handleMailToggle = () => {
+    console.log("Toggling login method. Current withEmail:", withEmail)
+    setWithEmail((prev) => !prev)
+    // form.clearErrors(["email", "username"])
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="ring-0">
@@ -142,8 +148,8 @@ export function LoginForm({
                       </FieldLabel>
                       <Button
                         type="button"
-                        onClick={() => setWithEmail(!withEmail)}
-                        variant="link"
+                        onClick={handleMailToggle}
+                        // variant="link"
                         size="xs"
                       >
                         {withEmail ? "Use Username" : "Use Email"}
@@ -173,12 +179,12 @@ export function LoginForm({
                   <Field data-invalid={fieldState.invalid}>
                     <div className="flex items-center">
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                      <a
+                      {/* <a
                         href="#"
                         className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                       >
                         Forgot your password?
-                      </a>
+                      </a> */}
                     </div>
 
                     <InputGroup>

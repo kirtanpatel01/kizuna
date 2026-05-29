@@ -5,7 +5,7 @@ import { and, desc, eq, sql } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { recordPostEngagement } from "@/lib/leaderboard.server"
+import { recordPostEngagement } from "@/lib/leaderboard"
 import { echo, echoInteraction, user } from "@/lib/schema"
 import type { FeedEcho } from "@/actions/feed.actions"
 
