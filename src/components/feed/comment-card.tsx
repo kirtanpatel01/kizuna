@@ -19,10 +19,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { type EchoCommentNode } from "@/actions/comment.actions"
+import { Link } from "@tanstack/react-router"
 
 type CommentCardProps = {
   comment: EchoCommentNode
   level?: number
+  parentAuthorUsername?: string
   onReply: (comment: EchoCommentNode) => void
   onToggleLike: (commentId: string) => void
   onEditComment: (commentId: string, content: string) => Promise<unknown>
@@ -33,6 +35,7 @@ type CommentCardProps = {
 function CommentCard({
   comment,
   level = 0,
+  parentAuthorUsername,
   onReply,
   onToggleLike,
   onEditComment,
@@ -142,7 +145,16 @@ function CommentCard({
                   onChange={(event) => setDraft(event.target.value)}
                   className="min-h-24 resize-y border-border/70"
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="xs"
+                    onClick={() => setIsEditing(false)}
+                    disabled={isSaving}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     type="button"
                     size="xs"
@@ -155,6 +167,18 @@ function CommentCard({
               </div>
             ) : (
               <p className="mt-2 ml-4 border-l border-border/70 pl-4 text-sm leading-6 whitespace-pre-wrap text-foreground/90">
+                {level > 0 && parentAuthorUsername ? (
+                  <span className="mr-1 text-muted-foreground select-none">
+                    {/* Replying to{" "} */}
+                    <Link
+                      to="/$username"
+                      params={{ username: parentAuthorUsername }}
+                      className="text-primary font-medium hover:underline cursor-pointer"
+                    >
+                      @{parentAuthorUsername}
+                    </Link>{" "}
+                  </span>
+                ) : null}
                 {comment.content}
               </p>
             )}
@@ -208,12 +232,13 @@ function CommentCard({
       </div>
 
       {hasReplies && showReplies ? (
-        <div className="mt-6 ml-8 space-y-3">
+        <div className={`mt-6 ${level === 0 ? "ml-6" : "ml-0"} space-y-3`}>
           {replies.map((reply) => (
             <CommentCard
               key={reply.id}
               comment={reply}
               level={level + 1}
+              parentAuthorUsername={comment.authorUsername}
               onReply={onReply}
               onToggleLike={onToggleLike}
               onEditComment={onEditComment}

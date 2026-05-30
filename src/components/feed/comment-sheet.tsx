@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { MessageCircle, Send } from "lucide-react"
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 
 import { type EchoCommentNode } from "@/actions/comment.actions"
 import CommentCard from "@/components/feed/comment-card"
@@ -19,9 +19,11 @@ import { useComments } from "@/hooks/use-comments"
 function CommentSheet({
   echoId,
   commentCount = 0,
+  children,
 }: {
   echoId: string
   commentCount?: number
+  children?: ReactNode
 }) {
   const {
     comments,
@@ -55,9 +57,13 @@ function CommentSheet({
 
   return (
     <Sheet>
-      <SheetTrigger className="flex cursor-pointer items-center gap-1 text-slate-500  hover:text-primary">
-        <MessageCircle size={16} />
-        <span>{threadCommentCount}</span>
+      <SheetTrigger asChild={Boolean(children)} className={children ? undefined : "flex cursor-pointer items-center gap-1 text-slate-500 hover:text-primary"}>
+        {children ?? (
+          <>
+            <MessageCircle size={16} />
+            <span>{threadCommentCount}</span>
+          </>
+        )}
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-xl">
         <SheetHeader>

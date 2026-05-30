@@ -74,7 +74,7 @@ function RouteComponent() {
   const activeEchoes = panel === "score" ? scoreSortedEchoes : followingEchoes
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background">
+    <div className="relative min-h-screen bg-background">
       <div className="pointer-events-none fixed inset-y-0 right-0 left-(--sidebar-width) z-0 hidden grid-cols-[minmax(0,1fr)_minmax(0,36rem)_minmax(0,1fr)] lg:grid">
         <div className="w-6 justify-self-end bg-[repeating-linear-gradient(-45deg,var(--border)_0,var(--border)_1px,transparent_0,transparent_50%)] bg-size-[8px_8px]" />
         <div />
@@ -85,7 +85,7 @@ function RouteComponent() {
         <Tabs
           value={panel}
           onValueChange={(value) => setPanel(value as "following" | "score")}
-          className="w-full"
+          className="sticky top-0 z-40 w-full bg-background/95 border-b backdrop-blur-md"
         >
           <TabsList className="w-full">
             <TabsTrigger value="following">Following</TabsTrigger>

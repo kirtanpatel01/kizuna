@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { type AccountUser, useAccountMutations } from "@/hooks/use-account-mutations"
+import {
+  type AccountUser,
+  useAccountMutations,
+} from "@/hooks/use-account-mutations"
 import { toast } from "sonner"
 import { Link } from "@tanstack/react-router"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export const Route = createFileRoute("/(authed)/account")({
   loader: async () => getCurrentUser(),
@@ -138,7 +142,11 @@ function RouteComponent() {
             </div>
             <div className="flex items-center gap-2">
               {!editing && (
-                <Button variant="secondary" onClick={startEditing} disabled={isBusy}>
+                <Button
+                  variant="secondary"
+                  onClick={startEditing}
+                  disabled={isBusy}
+                >
                   Edit
                 </Button>
               )}
@@ -147,7 +155,11 @@ function RouteComponent() {
                 onClick={() => logoutMutation.mutate()}
                 disabled={isBusy}
               >
-                {logoutMutation.isPending ? <Spinner className="size-4" /> : "Log out"}
+                {logoutMutation.isPending ? (
+                  <Spinner className="size-4" />
+                ) : (
+                  "Log out"
+                )}
               </Button>
             </div>
           </div>
@@ -158,7 +170,10 @@ function RouteComponent() {
               <div className="text-sm text-muted-foreground">Full name</div>
               <div className="mt-1">
                 {editing ? (
-                  <Input value={formName} onChange={(event) => setFormName(event.target.value)} />
+                  <Input
+                    value={formName}
+                    onChange={(event) => setFormName(event.target.value)}
+                  />
                 ) : (
                   <div className="font-medium">{user.name ?? "—"}</div>
                 )}
@@ -185,8 +200,12 @@ function RouteComponent() {
             </div>
 
             <div>
-              <div className="text-sm text-muted-foreground">Email verified</div>
-              <div className="mt-1 font-medium">{user.emailVerified ? "Yes" : "No"}</div>
+              <div className="text-sm text-muted-foreground">
+                Email verified
+              </div>
+              <div className="mt-1 font-medium">
+                {user.emailVerified ? "Yes" : "No"}
+              </div>
             </div>
 
             <div className="sm:col-span-2">
@@ -229,7 +248,8 @@ function RouteComponent() {
                       onChange={handleFileChange}
                     />
                     <p className="text-xs text-muted-foreground">
-                      JPEG, PNG, WebP. The selected image is uploaded when you save.
+                      JPEG, PNG, WebP. The selected image is uploaded when you
+                      save.
                     </p>
                   </div>
                 ) : null}
@@ -239,7 +259,11 @@ function RouteComponent() {
         </CardContent>
         {editing && (
           <CardFooter className="flex w-full justify-end gap-2">
-            <Button variant="outline" onClick={cancelEditing} disabled={isSaving}>
+            <Button
+              variant="outline"
+              onClick={cancelEditing}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
             <Button
@@ -261,10 +285,11 @@ function RouteComponent() {
         )}
       </Card>
 
-      <div className="w-full flex justify-center">
+      <div className="flex w-full justify-center">
         <Link to="/">
-        <Button className="mt-8">Go to Home</Button>
-      </Link>
+          <Button className="mt-8">Go to Home</Button>
+        </Link>
+        <ModeToggle />
       </div>
     </div>
   )

@@ -20,6 +20,7 @@ import {
 import { getEchoById } from "@/actions/feed.read.actions"
 import { type FeedEcho } from "@/actions/feed.utils"
 import { toggleLike, toggleSave } from "@/actions/interactions.actions"
+import CommentSheet from "@/components/feed/comment-sheet"
 
 export const Route = createFileRoute("/(authed)/echo/$echoId")({
   head: ({ params }) => ({
@@ -227,12 +228,16 @@ function EchoDetailPage({ echo }: { echo?: FeedEcho | null }) {
               disabled={isMissing || isLikePending}
               onClick={() => likeMutation.mutate(currentEcho.id)}
             />
-            <ActionStack
-              icon={MessageCircleIcon}
-              count={currentEcho.commentCount}
-              label="Comments"
-              disabled
-            />
+            <CommentSheet
+              echoId={currentEcho.id}
+              commentCount={currentEcho.commentCount}
+            >
+              <ActionStack
+                icon={MessageCircleIcon}
+                count={currentEcho.commentCount}
+                label="Comments"
+              />
+            </CommentSheet>
             <ActionStack
               icon={BookmarkIcon}
               count={currentEcho.saveCount}
