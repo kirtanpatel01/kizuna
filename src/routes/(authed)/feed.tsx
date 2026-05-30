@@ -51,7 +51,7 @@ function RouteComponent() {
     followingEchoes: FeedEcho[]
     allEchoes: FeedEcho[]
   }
-  const [panel, setPanel] = useState<"following" | "score">("following")
+  const [panel, setPanel] = useState<"following" | "score">("score")
   const {
     followingEchoes,
     allEchoes,

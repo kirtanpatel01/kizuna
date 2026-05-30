@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import {
@@ -51,6 +51,7 @@ function EchoDetailRoute() {
 }
 
 function EchoDetailPage({ echo }: { echo?: FeedEcho | null }) {
+  const navigate = useNavigate()
   const fallback =
     echo ??
     ({
@@ -168,29 +169,20 @@ function EchoDetailPage({ echo }: { echo?: FeedEcho | null }) {
 
   return (
     <div className="relative flex min-h-svh w-full items-center justify-center">
-      {(() => {
-        const canGoBack =
-          typeof window !== "undefined" && window.history.length > 1
-        return (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 left-4 z-20"
-            onClick={() => {
-              if (canGoBack && typeof window !== "undefined") {
-                try {
-                  window.history.back()
-                } catch (_) {
-                  /* no-op */
-                }
-              }
-            }}
-            disabled={!canGoBack}
-          >
-            <ArrowLeftIcon data-icon="inline-start" />
-          </Button>
-        )
-      })()}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 left-4 z-20"
+        onClick={() => {
+          if (typeof window !== "undefined" && window.history.length > 1) {
+            window.history.back()
+          } else {
+            navigate({ to: "/feed" })
+          }
+        }}
+      >
+        <ArrowLeftIcon data-icon="inline-start" />
+      </Button>
 
       <Card className="w-full max-w-xl border-border/70 bg-background/95 text-center shadow-2xl backdrop-blur-xl">
         <CardHeader className="items-center">

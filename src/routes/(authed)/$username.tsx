@@ -15,8 +15,8 @@ import { toast } from "sonner"
 import { followUser, unfollowUser } from "@/actions/follow.actions"
 import ProfileConnections from "@/components/profile/profile-connections"
 import { getEchoesByUsername } from "@/actions/feed.read.actions"
-import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
-import { Link } from "@tanstack/react-router"
+import { BookmarkIcon, HeartIcon, MessageCircleIcon, ArrowLeftIcon } from "lucide-react"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { type FeedEcho } from "@/actions/feed.utils"
 import { type PublicProfileData } from "@/hooks/use-profile"
 
@@ -48,6 +48,7 @@ export const Route = createFileRoute("/(authed)/$username")({
 })
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const params = Route.useParams()
   const { profile, feed } = Route.useLoaderData() as {
     profile: PublicProfileData | null
@@ -139,6 +140,25 @@ function RouteComponent() {
 
   return (
     <div className="mx-auto max-w-6xl p-2 sm:p-5">
+      {/* Back button for mobile navigation */}
+      <div className="mb-3 flex items-center md:hidden">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1 px-2 text-muted-foreground hover:text-foreground cursor-pointer"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              window.history.back()
+            } else {
+              navigate({ to: "/feed" })
+            }
+          }}
+        >
+          <ArrowLeftIcon className="size-4" />
+          <span>Back</span>
+        </Button>
+      </div>
+
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
         <div className="flex flex-col gap-3 sm:gap-4">
           <Card className="h-fit">

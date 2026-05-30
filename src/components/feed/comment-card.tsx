@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import {
-  MoreVertical,
+  MoreHorizontal,
   PencilLine,
-  Reply,
   Trash2,
   Heart,
   UserCircle2,
@@ -77,73 +76,35 @@ function CommentCard({
   }
 
   return (
-    <div>
-      <div>
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2">
-                {comment.authorImage ? (
-                  <img
-                    src={comment.authorImage}
-                    alt={comment.authorName}
-                    className="size-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <UserCircle2 className="size-10 text-muted-foreground" />
-                )}
-                <div className="flex flex-col">
-                  <span className="truncate font-medium text-foreground">
-                    {comment.authorName}
-                    {comment.isEchoAuthor ? (
-                      <span className="ml-2 text-xs text-primary">Author</span>
-                    ) : null}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    @{comment.authorUsername}
-                  </span>
-                </div>
-              </div>
+    <div className="py-2">
+      {/* Comment Header and Content Row */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          {/* Avatar */}
+          <Link
+            to="/$username"
+            params={{ username: comment.authorUsername }}
+            className="shrink-0 mt-0.5"
+          >
+            {comment.authorImage ? (
+              <img
+                src={comment.authorImage}
+                alt={comment.authorName}
+                className={`${level > 0 ? "size-8" : "size-10"} rounded-full object-cover`}
+              />
+            ) : (
+              <UserCircle2 className={`${level > 0 ? "size-8" : "size-10"} text-muted-foreground`} />
+            )}
+          </Link>
 
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{comment.createdAtLabel}</span>
-                {isOwner ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        className="shrink-0 text-muted-foreground"
-                      >
-                        <MoreVertical className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                        <PencilLine className="size-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={handleDelete}
-                      >
-                        <Trash2 className="size-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : null}
-              </div>
-            </div>
-
+          {/* Content & Metadata column */}
+          <div className="flex-1 min-w-0 text-sm leading-5">
             {isEditing ? (
-              <div className="mt-2 space-y-2">
+              <div className="space-y-2">
                 <Textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
-                  className="min-h-24 resize-y border-border/70"
+                  className="min-h-20 resize-y border-border/70 text-sm"
                 />
                 <div className="flex justify-end gap-2">
                   <Button
@@ -166,86 +127,129 @@ function CommentCard({
                 </div>
               </div>
             ) : (
-              <p className="mt-2 ml-4 border-l border-border/70 pl-4 text-sm leading-6 whitespace-pre-wrap text-foreground/90">
-                {level > 0 && parentAuthorUsername ? (
-                  <span className="mr-1 text-muted-foreground select-none">
-                    {/* Replying to{" "} */}
+              <div>
+                {/* Username + Content text inline */}
+                <p className="text-foreground break-words text-left">
+                  <Link
+                    to="/$username"
+                    params={{ username: comment.authorUsername }}
+                    className="font-semibold text-foreground hover:underline mr-1.5"
+                  >
+                    {comment.authorUsername}
+                  </Link>
+                  {comment.isEchoAuthor ? (
+                    <span className="text-[10px] bg-primary/10 text-primary px-1 rounded mr-1.5 font-medium inline-block align-middle">
+                      Author
+                    </span>
+                  ) : null}
+                  {level > 0 && parentAuthorUsername ? (
                     <Link
                       to="/$username"
                       params={{ username: parentAuthorUsername }}
-                      className="text-primary font-medium hover:underline cursor-pointer"
+                      className="text-sky-500 font-medium hover:underline mr-1.5"
                     >
                       @{parentAuthorUsername}
-                    </Link>{" "}
-                  </span>
-                ) : null}
-                {comment.content}
-              </p>
-            )}
+                    </Link>
+                  ) : null}
+                  <span className="text-foreground/90 whitespace-pre-wrap">{comment.content}</span>
+                </p>
 
-            <div className="mt-1 ml-4 flex items-center justify-between gap-2">
-              <div>
-                {hasReplies ? (
+                {/* Metadata Row */}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1.5">
+                  <span>{comment.createdAtLabel}</span>
+                  {comment.likeCount > 0 && (
+                    <span>
+                      {comment.likeCount} {comment.likeCount === 1 ? "like" : "likes"}
+                    </span>
+                  )}
                   <button
                     type="button"
-                    className="w-fit text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-                    onClick={() => setShowReplies((current) => !current)}
+                    onClick={() => onReply(comment)}
+                    className="font-medium hover:text-foreground cursor-pointer"
                   >
-                    {showReplies
-                      ? "Hide replies"
-                      : `Show replies (${replies.length})`}
+                    Reply
                   </button>
-                ) : null}
-              </div>
 
-              <div className="flex items-center gap-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className={`gap-1.5 text-muted-foreground  hover:text-rose-500 ${
-                    comment.isLiked ? "text-rose-500" : ""
-                  }`}
-                  onClick={() => onToggleLike(comment.id)}
-                  disabled={pendingLikeIds.has(comment.id)}
-                >
-                  <Heart
-                    size={16}
-                    className={comment.isLiked ? "fill-current" : ""}
-                  />
-                  <span>{comment.likeCount}</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="gap-1.5 text-muted-foreground  hover:text-primary"
-                  onClick={() => onReply(comment)}
-                >
-                  <Reply size={16} />
-                  Reply
-                </Button>
+                  {isOwner && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="hover:text-foreground cursor-pointer font-bold leading-none"
+                        >
+                          <MoreHorizontal className="size-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-32">
+                        <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                          <PencilLine className="size-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={handleDelete}
+                        >
+                          <Trash2 className="size-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
+
+        {/* Heart Icon Button on the far right */}
+        <button
+          type="button"
+          className={`shrink-0 self-start p-1.5 text-muted-foreground hover:text-rose-500 transition-colors ${
+            comment.isLiked ? "text-rose-500" : ""
+          }`}
+          onClick={() => onToggleLike(comment.id)}
+          disabled={pendingLikeIds.has(comment.id)}
+        >
+          <Heart
+            size={14}
+            className={comment.isLiked ? "fill-current" : ""}
+          />
+        </button>
       </div>
 
-      {hasReplies && showReplies ? (
-        <div className={`mt-6 ${level === 0 ? "ml-6" : "ml-0"} space-y-3`}>
-          {replies.map((reply) => (
-            <CommentCard
-              key={reply.id}
-              comment={reply}
-              level={level + 1}
-              parentAuthorUsername={comment.authorUsername}
-              onReply={onReply}
-              onToggleLike={onToggleLike}
-              onEditComment={onEditComment}
-              onDeleteComment={onDeleteComment}
-              pendingLikeIds={pendingLikeIds}
-            />
-          ))}
+      {/* Nested Replies Section */}
+      {hasReplies ? (
+        <div style={{ marginLeft: level === 0 ? "3.25rem" : "0" }}>
+          {showReplies && (
+            <div className="space-y-2 mt-2">
+              {replies.map((reply) => (
+                <CommentCard
+                  key={reply.id}
+                  comment={reply}
+                  level={level + 1}
+                  parentAuthorUsername={comment.authorUsername}
+                  onReply={onReply}
+                  onToggleLike={onToggleLike}
+                  onEditComment={onEditComment}
+                  onDeleteComment={onDeleteComment}
+                  pendingLikeIds={pendingLikeIds}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Toggle replies button with Instagram-like horizontal line separator */}
+          <button
+            type="button"
+            className="flex items-center mt-2 text-xs text-muted-foreground hover:text-foreground cursor-pointer font-medium"
+            onClick={() => setShowReplies((current) => !current)}
+          >
+            <span className="w-6 h-[1px] bg-border mr-2 inline-block"></span>
+            <span>
+              {showReplies ? "Hide replies" : `View replies (${replies.length})`}
+            </span>
+          </button>
         </div>
       ) : null}
     </div>

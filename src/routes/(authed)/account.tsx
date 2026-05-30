@@ -285,9 +285,9 @@ function RouteComponent() {
         )}
       </Card>
 
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center items-center mt-8">
         <Link to="/">
-          <Button className="mt-8">Go to Home</Button>
+          <Button>Go to Home</Button>
         </Link>
         <ModeToggle />
       </div>
