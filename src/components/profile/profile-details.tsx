@@ -1,6 +1,4 @@
 import { useMemo, useState } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useProfile } from "@/hooks/use-profile"
 import { PencilIcon } from "lucide-react"
 import { toast } from "sonner"
 import { upsertProfile } from "@/actions/profile.action"
@@ -15,24 +13,28 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Field, FieldLabel } from "../ui/field"
 
-export function ProfileDetails() {
-  const [dob, setDob] = useState<Date | null>(() => null)
-  const [gender, setGender] = useState<"male" | "female" | "no" | null>(null)
-  const [bio, setBio] = useState<string | null>(() => null)
+import { type ProfileData } from "@/hooks/use-profile"
+
+type Props = {
+  initialProfile: ProfileData
+}
+
+export function ProfileDetails({ initialProfile }: Props) {
+  const [dob, setDob] = useState<Date | null>(() =>
+    initialProfile?.dob ? new Date(initialProfile.dob) : null,
+  )
+  const [gender, setGender] = useState<"male" | "female" | "no" | null>(
+    () => initialProfile?.gender ?? null,
+  )
+  const [bio, setBio] = useState<string | null>(() => initialProfile?.bio ?? null)
   const [editingBio, setEditingBio] = useState(false)
   const [draftBio, setDraftBio] = useState<string>(() => bio ?? "")
   const [isSaving, setIsSaving] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
 
-  const { data: profileData, isLoading, refetch } = useProfile()
-
-  const profileDob = profileData?.dob ? new Date(profileData.dob) : null
-  const profileGender = profileData?.gender ?? null
-  const profileBio = profileData?.bio ?? null
-
-  const currentDob = dob ?? profileDob
-  const currentGender = gender ?? profileGender
-  const currentBio = bio ?? profileBio
+  const currentDob = dob
+  const currentGender = gender
+  const currentBio = bio
 
   const formattedDob = useMemo(() => {
     if (!currentDob) return "Not provided"
@@ -75,9 +77,6 @@ export function ProfileDetails() {
           setBio(bioToSave || null)
           setEditingBio(false)
           toast.success(result.message ?? "Profile saved")
-          try {
-            await refetch()
-          } catch {}
         } else {
           toast.error(result.message ?? "Failed to save profile")
         }
@@ -97,11 +96,7 @@ export function ProfileDetails() {
         <Popover>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-medium">
-              {isLoading ? (
-                <Skeleton className="h-4 w-24" />
-              ) : (
-                formattedDob
-              )}
+              {formattedDob}
             </div>
 
             <PopoverTrigger asChild>
@@ -136,9 +131,7 @@ export function ProfileDetails() {
         <Popover>
           <div className="flex items-start justify-between gap-3">
             <div className="text-sm font-medium capitalize">
-              {isLoading ? (
-                <Skeleton className="h-4 w-20" />
-              ) : currentGender ? (
+              {currentGender ? (
                 currentGender === "no" ? (
                   "Prefer not to say"
                 ) : (
@@ -225,7 +218,7 @@ export function ProfileDetails() {
           </div>
         ) : (
           <p className="mt-2 text-sm text-muted-foreground">
-            {isLoading ? <Skeleton className="h-16 w-full" /> : currentBio ?? "Not provided"}
+            {currentBio ?? "Not provided"}
           </p>
         )}
       </div>

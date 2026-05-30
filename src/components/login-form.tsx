@@ -110,7 +110,7 @@ export function LoginForm({
         })
       } else {
         toast.success("Logged in successfully!")
-        navigate({ to: "/" })
+        navigate({ to: "/feed" })
       }
     } catch (error) {
       form.setError("root", {

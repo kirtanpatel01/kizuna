@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { useAccountContext } from '@/providers/account-provider'
+import { useAccount } from '@/hooks/use-account'
 
 export function AccountAvatarSection() {
-  const account = useAccountContext()
+  const account = useAccount()
 
   return (
     <div className="sm:col-span-2">

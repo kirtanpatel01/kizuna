@@ -12,10 +12,9 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { useAccountContext } from "@/providers/account-provider"
-import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { createEcho, type FeedEcho } from "@/actions/feed.actions"
+import { createEcho } from "@/actions/feed.write.actions"
+import { type FeedEcho } from "@/actions/feed.utils"
 
 const MAX_ECHO_LENGTH = 280
 
@@ -25,17 +24,17 @@ function getInitials(name: string) {
   return parts.map((part) => part[0]?.toUpperCase()).join("")
 }
 
-export function CreateEchoDialog() {
-  const account = useAccountContext()
-  const queryClient = useQueryClient()
+type Props = {
+  displayName: string
+  username: string
+  image?: string | null
+  onCreated?: (echo: FeedEcho) => void
+}
+
+export function CreateEchoDialog({ displayName, username, image, onCreated }: Props) {
   const [open, setOpen] = useState(false)
   const [content, setContent] = useState("")
   const [isCreating, setIsCreating] = useState(false)
-
-  const user = account.user
-  const displayName = user?.name?.trim() || "User"
-  const username = user?.username?.trim() || "username"
-  const image = user?.image
 
   async function handleCreate() {
     if (isCreating) return
@@ -50,9 +49,7 @@ export function CreateEchoDialog() {
     try {
       const newEcho = await createEcho({ data: { content: trimmed } })
 
-      queryClient.setQueryData<FeedEcho[]>(["echoes", "posted"], (current) => {
-        return [newEcho, ...(current ?? [])]
-      })
+      onCreated?.(newEcho)
 
       setContent("")
       toast.success("Echo posted")

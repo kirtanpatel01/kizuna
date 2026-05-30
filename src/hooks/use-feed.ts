@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { type FeedEcho } from "@/actions/feed.actions"
+import { type FeedEcho } from "@/actions/feed.utils"
 import { toggleLike, toggleSave } from "@/actions/interactions.actions"
 
 type UseFeedResult = {

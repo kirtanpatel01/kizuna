@@ -18,7 +18,7 @@ export const Route = createFileRoute("/(authed)")({
 function RouteComponent() {
   return (
     <div>
-      hemkndd
+      {/* hemkndd */}
       <TooltipProvider>
         <SidebarProvider
           style={

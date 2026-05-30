@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { recordPostEngagement } from "@/lib/leaderboard"
 import { echo, echoInteraction, user } from "@/lib/schema"
-import type { FeedEcho } from "@/actions/feed.actions"
+import type { FeedEcho } from "@/actions/feed.utils"
 
 type InteractionKind = "like" | "save"
 

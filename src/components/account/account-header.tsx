@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { useAccountContext } from '@/providers/account-provider'
+import { useAccount } from '@/hooks/use-account'
 
 type AccountHeaderProps = {
   title: string
@@ -8,7 +8,7 @@ type AccountHeaderProps = {
 }
 
 export function AccountHeader({ title, description }: AccountHeaderProps) {
-  const account = useAccountContext()
+  const account = useAccount()
 
   return (
     <div className="flex items-center justify-between w-full gap-4">

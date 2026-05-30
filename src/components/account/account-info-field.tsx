@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input'
-import { useAccountContext } from '@/providers/account-provider'
+import { useAccount } from '@/hooks/use-account'
 
 type AccountInfoFieldProps = {
   label: string
@@ -7,7 +7,7 @@ type AccountInfoFieldProps = {
 }
 
 export function AccountInfoField({ label, field }: AccountInfoFieldProps) {
-  const account = useAccountContext()
+  const account = useAccount()
 
   const value =
     field === 'name'

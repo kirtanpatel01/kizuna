@@ -17,7 +17,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { getEchoById, type FeedEcho } from "@/actions/feed.actions"
+import { getEchoById } from "@/actions/feed.read.actions"
+import { type FeedEcho } from "@/actions/feed.utils"
 import { toggleLike, toggleSave } from "@/actions/interactions.actions"
 
 export const Route = createFileRoute("/(authed)/echo/$echoId")({

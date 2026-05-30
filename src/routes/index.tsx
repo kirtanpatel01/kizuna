@@ -1,8 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+import { auth } from "@/lib/auth"
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const headers = getRequestHeaders()
+    const session = await auth.api.getSession({ headers })
+
+    return {
+      isAuthenticated: Boolean(session?.user),
+    }
+  },
   head: () => ({
     meta: [
       {
@@ -23,6 +33,8 @@ export const Route = createFileRoute("/")({
 })
 
 function App() {
+  const { isAuthenticated } = Route.useLoaderData()
+
   return (
     <div className="relative">
       <div className="absolute top-8 flex w-full items-center justify-center">
@@ -88,12 +100,20 @@ function App() {
           A twitter like platform where you can share your thoughts!
         </p>
         <div className="mt-8 flex items-center gap-10">
-          <Button variant="secondary">
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button>
-            <Link to="/signup">Sign Up</Link>
-          </Button>
+          {isAuthenticated ? (
+            <Button>
+              <Link to="/feed">Go to Feed</Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="secondary">
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

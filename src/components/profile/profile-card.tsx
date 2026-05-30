@@ -1,12 +1,14 @@
+import { type FeedEcho } from "@/actions/feed.utils"
 import { CreateEchoDialog } from "@/components/echo/create-echo-dialog"
 
 type Props = {
   displayName: string
   username: string
   image?: string | null
+  onEchoCreated?: (echo: FeedEcho) => void
 }
 
-export function ProfileCard({ displayName, username, image }: Props) {
+export function ProfileCard({ displayName, username, image, onEchoCreated }: Props) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -32,7 +34,12 @@ export function ProfileCard({ displayName, username, image }: Props) {
         </div>
       </div>
 
-      <CreateEchoDialog />
+      <CreateEchoDialog
+        displayName={displayName}
+        username={username}
+        image={image}
+        onCreated={onEchoCreated}
+      />
     </div>
   )
 }

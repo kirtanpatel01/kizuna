@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import {
   ArrowUpRightIcon,
@@ -18,30 +17,23 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EditEchoDialog } from "@/components/echo/edit-echo-dialog"
 import { DeleteEchoDialog } from "@/components/echo/delete-echo-dialog"
-import {
-  getMyPostedEchoes,
-  type FeedEcho,
-} from "@/actions/feed.actions"
+import { type FeedEcho } from "@/actions/feed.utils"
 import { Button } from "@/components/ui/button"
-import { getSavedEchoes } from "@/actions/interactions.actions"
 
-export function UserFeed() {
+type Props = {
+  postedEchoes: FeedEcho[]
+  savedEchoes: FeedEcho[]
+  onPostedEchoUpdated: (echo: FeedEcho) => void
+  onPostedEchoDeleted: (echoId: string) => void
+}
+
+export function UserFeed({
+  postedEchoes,
+  savedEchoes,
+  onPostedEchoUpdated,
+  onPostedEchoDeleted,
+}: Props) {
   const [echoView, setEchoView] = useState<"posted" | "saved">("posted")
-
-  const queryClient = useQueryClient()
-
-  const postedQuery = useQuery({
-    queryKey: ["echoes", "posted"],
-    queryFn: async () => getMyPostedEchoes(),
-  })
-
-  const savedQuery = useQuery({
-    queryKey: ["echoes", "saved"],
-    queryFn: async () => getSavedEchoes(),
-  })
-
-  const postedList = postedQuery.data ?? []
-  const savedList = savedQuery.data ?? []
 
   return (
     <Card className="bg-transperant min-h-160">
@@ -63,43 +55,7 @@ export function UserFeed() {
 
       <CardContent>
         <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
-          {echoView === "posted" && postedQuery.isLoading
-            ? Array.from({ length: 4 }).map((_, idx) => (
-                <Card
-                  key={`skeleton-${idx}`}
-                  size="sm"
-                  className="h-full animate-pulse bg-background/80 ring-transparent hover:bg-background hover:shadow-lg hover:ring-border/70"
-                >
-                  <CardContent className="flex h-full flex-col gap-3">
-                    <div className="flex items-start justify-between gap-3 text-xs text-muted-foreground">
-                      <div className="h-3 w-6 rounded bg-muted/30" />
-
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <div className="h-5 w-5 rounded bg-muted/30" />
-                        <div className="h-5 w-5 rounded bg-muted/30" />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <div className="h-3 w-full rounded bg-muted/30" />
-                      <div className="h-3 w-11/12 rounded bg-muted/30" />
-                      <div className="h-3 w-4/5 rounded bg-muted/30" />
-                      <div className="h-3 w-2/3 rounded bg-muted/30" />
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <div className="h-3 w-8 rounded bg-muted/30" />
-                      <div className="h-3 w-8 rounded bg-muted/30" />
-                      <div className="h-3 w-8 rounded bg-muted/30" />
-                      <div className="h-3 w-8 rounded bg-muted/30" />
-                    </div>
-
-                    <div className="h-6 w-6 rounded bg-muted/30" />
-                  </CardFooter>
-                </Card>
-              ))
-            : (echoView === "posted" ? postedList : savedList).map((echo) => (
+          {(echoView === "posted" ? postedEchoes : savedEchoes).map((echo) => (
                 <Card
                   key={echo.id}
                   size="sm"
@@ -139,26 +95,14 @@ export function UserFeed() {
                           <EditEchoDialog
                             echo={echo}
                             onUpdated={(updated) => {
-                              queryClient.setQueryData<FeedEcho[]>(
-                                ["echoes", "posted"],
-                                (current) =>
-                                  (current ?? []).map((item) =>
-                                    item.id === updated.id ? updated : item
-                                  )
-                              )
+                              onPostedEchoUpdated(updated)
                             }}
                           />
 
                           <DeleteEchoDialog
                             echo={echo}
                             onDeleted={(echoId) => {
-                              queryClient.setQueryData<FeedEcho[]>(
-                                ["echoes", "posted"],
-                                (current) =>
-                                  (current ?? []).filter(
-                                    (item) => item.id !== echoId
-                                  )
-                              )
+                              onPostedEchoDeleted(echoId)
                             }}
                           />
                         </div>
@@ -197,40 +141,7 @@ export function UserFeed() {
                 </Card>
               ))}
 
-          {echoView === "saved" && savedQuery.isLoading ? (
-            Array.from({ length: 4 }).map((_, idx) => (
-              <Card
-                key={`saved-skeleton-${idx}`}
-                size="sm"
-                className="h-full animate-pulse bg-background/80 ring-transparent hover:bg-background hover:shadow-lg hover:ring-border/70"
-              >
-                <CardContent className="flex h-full flex-col gap-3">
-                  <div className="flex items-start justify-between gap-3 text-xs text-muted-foreground">
-                    <div className="h-3 w-6 rounded bg-muted/30" />
-                    <div className="h-3 w-8 rounded bg-muted/30" />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <div className="h-3 w-full rounded bg-muted/30" />
-                    <div className="h-3 w-11/12 rounded bg-muted/30" />
-                    <div className="h-3 w-4/5 rounded bg-muted/30" />
-                  </div>
-                </CardContent>
-                <CardFooter className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <div className="h-3 w-8 rounded bg-muted/30" />
-                    <div className="h-3 w-8 rounded bg-muted/30" />
-                    <div className="h-3 w-8 rounded bg-muted/30" />
-                    <div className="h-3 w-8 rounded bg-muted/30" />
-                  </div>
-
-                  <div className="h-6 w-6 rounded bg-muted/30" />
-                </CardFooter>
-              </Card>
-            ))
-          ) : null}
-
-          {echoView === "saved" && !savedQuery.isLoading && savedList.length === 0 ? (
+          {echoView === "saved" && savedEchoes.length === 0 ? (
             <div className="col-span-full rounded-xl border border-dashed bg-muted/20 p-6 text-sm text-muted-foreground">
               No saved echoes yet.
             </div>

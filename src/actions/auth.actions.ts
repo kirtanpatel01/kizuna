@@ -39,7 +39,7 @@ export const signupUser = createServerFn({ method: "POST" })
           name,
           email,
           password,
-          callbackURL: "/",
+          callbackURL: `${process.env.BETTER_AUTH_URL}/feed` || "http://localhost:3000/feed",
         },
       })
 
@@ -88,15 +88,14 @@ export const loginUser = createServerFn({ method: "POST" })
           email: withEmail ? email : userEmail, // required
           password, // required
           rememberMe: true,
-          callbackURL: "/",
+          callbackURL: `${process.env.BETTER_AUTH_URL}/feed` || "http://localhost:3000/feed",
         },
-        // This endpoint requires session cookies.
         headers,
       })
       return { success: true, message: "Login successful" }
     } catch (error) {
       console.log("Error while login: ", error)
-      return { success: false, message: "Something went wrnog while login!" }
+      return { success: false, message: "Something went wrong while login!" }
     }
   })
 

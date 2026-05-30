@@ -1,39 +1,43 @@
 import ProfileCard from "./profile-card"
 import ProfileDetails from "./profile-details"
 import ProfileConnections from "./profile-connections"
-import { useProfile, type PublicProfileData } from "@/hooks/use-profile"
+import { type PublicProfileData, type ProfileData } from "@/hooks/use-profile"
+import { type FeedEcho } from "@/actions/feed.utils"
 
 type Props = {
   displayName: string
   username: string
   image?: string | null
+  profile: PublicProfileData | null
+  initialProfile: ProfileData
+  onEchoCreated?: (echo: FeedEcho) => void
 }
 
 export function UserInfo({
   displayName,
   username,
   image,
+  profile,
+  initialProfile,
+  onEchoCreated,
 }: Props) {
-  const resolvedUsername = username.trim()
-  const profileQuery = useProfile(resolvedUsername)
-  const profile = profileQuery.data as PublicProfileData | null
-
   return (
     <div className="flex flex-col gap-4">
       <ProfileCard
         displayName={displayName}
-        username={resolvedUsername || "username"}
+        username={username || "username"}
         image={image}
+        onEchoCreated={onEchoCreated}
       />
 
-      <ProfileDetails />
+      <ProfileDetails initialProfile={initialProfile} />
 
       <ProfileConnections
-        followers={profile?.followers}
-        following={profile?.following}
+        followers={profile?.followers ?? []}
+        following={profile?.following ?? []}
         followersCount={profile?.followersCount}
         followingCount={profile?.followingCount}
-        isLoading={profileQuery.isPending}
+        isLoading={false}
       />
     </div>
   )

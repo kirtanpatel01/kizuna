@@ -92,9 +92,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     } else {
       toast.success(
         result.message ||
-          "Account created successfully! Please check your email to verify your account."
+          "Account created successfully!"
       )
-      navigate({ to: "/login" })
+      navigate({ to: "/feed" })
     }
   }
 

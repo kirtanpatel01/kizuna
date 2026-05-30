@@ -1,6 +1,7 @@
 import { useState } from "react"
 
-import { updateEcho, type FeedEcho } from "@/actions/feed.actions"
+import { updateEcho } from "@/actions/feed.write.actions"
+import { type FeedEcho } from "@/actions/feed.utils"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,

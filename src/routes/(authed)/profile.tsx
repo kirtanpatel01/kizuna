@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { createFileRoute } from "@tanstack/react-router"
+import { type FeedEcho } from "@/actions/feed.utils"
 import { UserInfo } from "@/components/profile/user-info"
 import { UserFeed } from "@/components/profile/user-feed"
 import {
@@ -7,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { AccountProvider } from "@/providers/account-provider"
 import { getCurrentUser } from "@/actions/auth.actions"
+import { getProfile, getPublicProfile } from "@/actions/profile.action"
+import { getMyPostedEchoes } from "@/actions/feed.read.actions"
+import { getSavedEchoes } from "@/actions/interactions.actions"
 
 export const Route = createFileRoute("/(authed)/profile")({
   head: () => ({
@@ -28,13 +32,39 @@ export const Route = createFileRoute("/(authed)/profile")({
   }),
   loader: async () => {
     const user = await getCurrentUser()
-    return { user }
+
+    if (!user?.username) {
+      return {
+        user: null,
+        profile: null,
+        publicProfile: null,
+        postedEchoes: [],
+        savedEchoes: [],
+      }
+    }
+
+    const [profile, publicProfile, postedEchoes, savedEchoes] = await Promise.all([
+      getProfile(),
+      getPublicProfile({ data: { username: user.username } }),
+      getMyPostedEchoes(),
+      getSavedEchoes(),
+    ])
+
+    return {
+      user,
+      profile,
+      publicProfile,
+      postedEchoes,
+      savedEchoes,
+    }
   },
   component: RouteComponent,
 })
 
 function ProfileContent() {
-  const { user } = Route.useLoaderData()
+  const { user, profile, publicProfile, postedEchoes, savedEchoes } = Route.useLoaderData()
+  const [postedList, setPostedList] = useState<FeedEcho[]>(postedEchoes)
+  const [savedList] = useState<FeedEcho[]>(savedEchoes)
 
   if (!user) {
     return (
@@ -53,6 +83,10 @@ function ProfileContent() {
   const username = user.username?.trim() || ""
   const image = user.image
 
+  const handleEchoCreated = (echo: FeedEcho) => {
+    setPostedList((current) => [echo, ...current])
+  }
+
   return (
     <div className="p-6">
       <div className="grid gap-6 lg:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
@@ -60,17 +94,27 @@ function ProfileContent() {
           displayName={displayName}
           username={username}
           image={image}
+          profile={publicProfile}
+          initialProfile={profile}
+          onEchoCreated={handleEchoCreated}
         />
-        <UserFeed />
+        <UserFeed
+          postedEchoes={postedList}
+          savedEchoes={savedList}
+          onPostedEchoUpdated={(updated) => {
+            setPostedList((current) =>
+              current.map((item) => (item.id === updated.id ? updated : item)),
+            )
+          }}
+          onPostedEchoDeleted={(echoId) => {
+            setPostedList((current) => current.filter((item) => item.id !== echoId))
+          }}
+        />
       </div>
     </div>
   )
 }
 
 function RouteComponent() {
-  return (
-    <AccountProvider>
-      <ProfileContent />
-    </AccountProvider>
-  )
+  return <ProfileContent />
 }

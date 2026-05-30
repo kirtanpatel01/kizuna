@@ -14,7 +14,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { followUser, unfollowUser } from "@/actions/follow.actions"
 import ProfileConnections from "@/components/profile/profile-connections"
-import { getEchoesByUsername } from "@/actions/feed.actions"
+import { getEchoesByUsername } from "@/actions/feed.read.actions"
 import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
