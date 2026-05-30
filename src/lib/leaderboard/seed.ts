@@ -13,7 +13,6 @@ import {
 	getCurrentWeekKey,
 	getCurrentWeekStart,
 	getWeeklyPostStateKey,
-	getWeeklyUserBoardKey,
 } from "./keys"
 import { getNormalizedUserScore, getPostScore } from "./scoring"
 

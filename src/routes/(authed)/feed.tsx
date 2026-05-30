@@ -95,7 +95,7 @@ function RouteComponent() {
 
         <div className="divide-y divide-border">
           {activeEchoes.length === 0 ? (
-            <div className="p-6 text-sm text-muted-foreground">
+            <div className="p-4 sm:p-6 text-sm text-muted-foreground">
               {panel === "following"
                 ? "No posts from people you follow yet."
                 : "No posts available to rank yet."}
@@ -103,7 +103,7 @@ function RouteComponent() {
           ) : null}
 
           {activeEchoes.map((echo, index) => (
-            <article key={echo.id} className="w-full p-6">
+            <article key={echo.id} className="w-full p-4 md:p-6">
               <div className="mb-4 flex items-start justify-between gap-4">
                 <Link
                   to="/$username"
@@ -135,7 +135,7 @@ function RouteComponent() {
 
               <p className="mb-6">{echo.content}</p>
 
-              <footer className="mt-2 flex items-center justify-end gap-10 text-sm">
+              <footer className="mt-2 flex items-center justify-end gap-6 md:gap-10 text-sm">
                 <button
                   type="button"
                   className={`flex items-center gap-1 ${

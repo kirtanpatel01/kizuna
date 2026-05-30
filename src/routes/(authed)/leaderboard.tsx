@@ -112,8 +112,8 @@ function LeaderboardRoute() {
 	}, [])
 
 	return (
-		<div className="min-h-svh w-full px-4 py-6 sm:px-6 lg:px-8">
-			<div className="w-full max-w-7xl space-y-5">
+		<div className="min-h-svh w-full px-2 py-4 sm:px-6 lg:px-8 sm:py-6">
+			<div className="w-full max-w-7xl space-y-3 sm:space-y-5">
 				<Tabs value={scope} onValueChange={(value) => setScope(value as ScopeKey)}>
 					<TabsList>
 						<TabsTrigger value="alltime">All time</TabsTrigger>
@@ -121,7 +121,7 @@ function LeaderboardRoute() {
 					</TabsList>
 
 					<TabsContent value="alltime">
-						<div className="grid gap-4 xl:grid-cols-[0.45fr_1.15fr]">
+						<div className="grid gap-3 sm:gap-4 xl:grid-cols-[0.45fr_1.15fr]">
 							<SimpleBoard
 								title="Users"
 									entries={data.alltime.users}
@@ -156,7 +156,7 @@ function LeaderboardRoute() {
 					</TabsContent>
 
 					<TabsContent value="weekly">
-						<div className="grid gap-4 xl:grid-cols-[0.45fr_1.15fr]">
+						<div className="grid gap-3 sm:gap-4 xl:grid-cols-[0.45fr_1.15fr]">
 							<SimpleBoard
 								title="Users"
 								entries={data.weekly.users}

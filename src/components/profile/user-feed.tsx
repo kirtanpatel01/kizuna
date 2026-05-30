@@ -37,7 +37,7 @@ export function UserFeed({
 
   return (
     <Card className="bg-transperant min-h-160">
-      <CardHeader className="flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <CardHeader className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between sm:pb-6 sm:gap-4">
         <div>
           <CardTitle>Echo Panel</CardTitle>
           <CardDescription>

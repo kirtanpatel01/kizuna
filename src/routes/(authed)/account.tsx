@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { type AccountUser, useAccountMutations } from "@/hooks/use-account-mutations"
 import { toast } from "sonner"
+import { Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(authed)/account")({
   loader: async () => getCurrentUser(),
@@ -84,7 +85,7 @@ function RouteComponent() {
 
   if (!user) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <Card>
           <CardContent className="py-6">You are not signed in.</CardContent>
         </Card>
@@ -125,7 +126,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="mx-auto max-w-2xl p-2 sm:p-6">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-4">
@@ -259,6 +260,12 @@ function RouteComponent() {
           </CardFooter>
         )}
       </Card>
+
+      <div className="w-full flex justify-center">
+        <Link to="/">
+        <Button className="mt-8">Go to Home</Button>
+      </Link>
+      </div>
     </div>
   )
 }

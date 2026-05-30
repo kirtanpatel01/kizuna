@@ -212,12 +212,12 @@ function EchoDetailPage({ echo }: { echo?: FeedEcho | null }) {
             <div className="text-xs text-muted-foreground">{currentEcho.createdAtLabel}</div>
           </div>
         </CardHeader>
-        <CardContent className="flex flex-col items-center gap-8">
+        <CardContent className="flex flex-col items-center gap-4 sm:gap-8">
           <p className="mx-auto max-w-lg text-lg leading-8 text-foreground sm:text-xl">
             {currentEcho.content}
           </p>
 
-          <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <ActionStack
               icon={HeartIcon}
               count={currentEcho.likeCount}

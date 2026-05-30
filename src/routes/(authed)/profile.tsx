@@ -68,7 +68,7 @@ function ProfileContent() {
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-3xl p-6">
+      <div className="mx-auto max-w-3xl p-4 sm:p-6">
         <Card>
           <CardHeader>
             <CardTitle>Profile</CardTitle>
@@ -88,8 +88,8 @@ function ProfileContent() {
   }
 
   return (
-    <div className="p-6">
-      <div className="grid gap-6 lg:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
+    <div className="p-2 sm:p-6">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
         <UserInfo
           displayName={displayName}
           username={username}

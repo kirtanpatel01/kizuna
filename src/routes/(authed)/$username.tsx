@@ -17,6 +17,8 @@ import ProfileConnections from "@/components/profile/profile-connections"
 import { getEchoesByUsername } from "@/actions/feed.read.actions"
 import { BookmarkIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
+import { type FeedEcho } from "@/actions/feed.utils"
+import { type PublicProfileData } from "@/hooks/use-profile"
 
 export const Route = createFileRoute("/(authed)/$username")({
   head: ({ params }) => ({
@@ -47,12 +49,15 @@ export const Route = createFileRoute("/(authed)/$username")({
 
 function RouteComponent() {
   const params = Route.useParams()
-  const { profile, feed } = Route.useLoaderData()
-  const [profileState, setProfileState] = useState(profile)
+  const { profile, feed } = Route.useLoaderData() as {
+    profile: PublicProfileData | null
+    feed: FeedEcho[]
+  }
+  const [profileState, setProfileState] = useState<PublicProfileData | null>(profile)
 
   if (!profileState) {
     return (
-      <div className="mx-auto max-w-3xl p-6">
+      <div className="mx-auto max-w-3xl p-4 sm:p-6">
         <Card>
           <CardHeader>
             <CardTitle>Profile not found</CardTitle>
@@ -80,7 +85,7 @@ function RouteComponent() {
     onMutate: async () => {
       const previousProfile = profileState
 
-      setProfileState((current) => {
+      setProfileState((current: PublicProfileData | null) => {
         if (!current || current.isOwnProfile) {
           return current
         }
@@ -129,13 +134,13 @@ function RouteComponent() {
       ?.trim()
       .split(/\s+/)
       .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
+      .map((part: string) => part[0]?.toUpperCase())
       .join("") || "?"
 
   return (
-    <div className="mx-auto max-w-6xl p-4 sm:p-5">
-      <div className="grid gap-4 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
-        <div className="flex flex-col gap-4">
+    <div className="mx-auto max-w-6xl p-2 sm:p-5">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
+        <div className="flex flex-col gap-3 sm:gap-4">
           <Card className="h-fit">
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
@@ -188,7 +193,7 @@ function RouteComponent() {
 
             <CardContent>
               <div className="grid gap-3 lg:grid-cols-2">
-                {feed.map((post) => (
+                {feed.map((post: FeedEcho) => (
                   <Link
                     to="/echo/$echoId"
                     params={{ echoId: post.id }}

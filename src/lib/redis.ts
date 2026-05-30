@@ -1,7 +1,7 @@
 import Redis, { type RedisOptions } from "ioredis"
 
 type RedisGlobal = typeof globalThis & {
-	__kizunaRedis?: Redis
+	__greemRedis?: Redis
 }
 
 const globalRedis = globalThis as RedisGlobal
