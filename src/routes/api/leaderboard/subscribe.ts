@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/leaderboard/subscribe")({
         })
 
         const Redis = (await import("ioredis")).default
-        const subscriber = new Redis(process.env.REDIS_URL)
+        const subscriber = new Redis(process.env.REDIS_URL!)
 
         const stream = new ReadableStream({
           start(controller) {
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/leaderboard/subscribe")({
 
             subscriber.subscribe("leaderboard:updates").then(() => {
               subscriber.on("message", onMessage)
-            }).catch((err) => {
+            }).catch(() => {
               controller.enqueue(`data: ${JSON.stringify({ event: 'error', message: 'subscribe failed' })}\n\n`)
             })
 

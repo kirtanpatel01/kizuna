@@ -11,7 +11,7 @@ import { type FeedEcho } from "@/actions/feed.utils"
 import { useFeedPanels } from "@/hooks/use-feed-panels"
 import CommentSheet from "@/components/feed/comment-sheet"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getPostScore } from "@/lib/leaderboard"
+import { getPostScore } from "@/lib/leaderboard/scoring"
 
 export const Route = createFileRoute("/(authed)/feed")({
   head: () => ({
