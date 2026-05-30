@@ -1,16 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { getRequestHeaders } from "@tanstack/react-start/server"
-import { auth } from "@/lib/auth"
+import { getCurrentUser } from "@/actions/auth.actions"
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const headers = getRequestHeaders()
-    const session = await auth.api.getSession({ headers })
+    const user = await getCurrentUser()
 
     return {
-      isAuthenticated: Boolean(session?.user),
+      isAuthenticated: Boolean(user),
     }
   },
   head: () => ({

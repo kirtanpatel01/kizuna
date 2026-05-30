@@ -1,12 +1,86 @@
+"use server"
+
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq, inArray } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { echo, follow, user } from "@/lib/schema"
+import { echo, follow, user, echoInteraction } from "@/lib/schema"
 
-import { applyViewerInteractionState, toFeedEcho } from "./feed.utils"
+import { toFeedEcho, type FeedEcho } from "./feed.utils"
+
+async function applyViewerInteractionState(echoes: FeedEcho[]) {
+	const echoIds = [...new Set(echoes.map((item) => item.id))].filter(Boolean)
+
+	if (echoIds.length === 0) {
+		return echoes.map((item) => ({
+			...item,
+			isLiked: false,
+			isSaved: false,
+		}))
+	}
+
+	const headers = getRequestHeaders()
+	const session = await auth.api.getSession({ headers })
+	const userId = session?.user?.id
+
+	if (!userId) {
+		return echoes.map((item) => ({
+			...item,
+			isLiked: false,
+			isSaved: false,
+		}))
+	}
+
+	const rows = await db
+		.select({
+			echoId: echoInteraction.echoId,
+			type: echoInteraction.type,
+		})
+		.from(echoInteraction)
+		.where(
+			and(
+				eq(echoInteraction.userId, userId),
+				inArray(echoInteraction.echoId, echoIds),
+				inArray(echoInteraction.type, ["like", "save"]),
+			),
+		)
+
+	const stateByEchoId = new Map<string, { isLiked: boolean; isSaved: boolean }>()
+
+	for (const echoId of echoIds) {
+		stateByEchoId.set(echoId, { isLiked: false, isSaved: false })
+	}
+
+	for (const row of rows) {
+		const existing = stateByEchoId.get(row.echoId) ?? {
+			isLiked: false,
+			isSaved: false,
+		}
+
+		if (row.type === "like") {
+			existing.isLiked = true
+		}
+
+		if (row.type === "save") {
+			existing.isSaved = true
+		}
+
+		stateByEchoId.set(row.echoId, existing)
+	}
+
+	return echoes.map((echo) => {
+		const state = stateByEchoId.get(echo.id)
+
+		return {
+			...echo,
+			isLiked: state?.isLiked ?? false,
+			isSaved: state?.isSaved ?? false,
+		}
+	})
+}
+
 
 export const getPostedEchoes = createServerFn({ method: "GET" }).handler(async () => {
 	const rows = await db

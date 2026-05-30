@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router"
-import Redis from "ioredis"
 
 export const Route = createFileRoute("/api/leaderboard/subscribe")({
   server: {
@@ -11,6 +10,7 @@ export const Route = createFileRoute("/api/leaderboard/subscribe")({
           Connection: "keep-alive",
         })
 
+        const Redis = (await import("ioredis")).default
         const subscriber = new Redis(process.env.REDIS_URL)
 
         const stream = new ReadableStream({
