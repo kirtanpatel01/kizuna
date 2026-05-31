@@ -91,7 +91,7 @@ function RouteComponent() {
     return (
       <div className="p-4 md:p-8">
         <Card>
-          <CardContent className="py-6">You are not signed in.</CardContent>
+          <CardContent className="py-6">You&apos;re not signed in. <Link to="/login"> <Button variant={"link"}>Login</Button> </Link></CardContent>
         </Card>
       </div>
     )
@@ -130,7 +130,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center p-2 sm:p-6">
+    <div className="min-h-screen flex flex-col justify-center items-center p-2 sm:p-6">
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <div className="flex items-center justify-between gap-4">

@@ -101,8 +101,9 @@ export const loginUser = createServerFn({ method: "POST" })
 
 export const logoutUser = createServerFn({ method: "POST" }).handler(
   async () => {
+    const headers = getRequestHeaders()
     try {
-      await auth.api.signOut()
+      await auth.api.signOut({ headers })
       return { success: true, message: "Logged out successfully" }
     } catch (error) {
       console.log("Error while logout: ", error)
