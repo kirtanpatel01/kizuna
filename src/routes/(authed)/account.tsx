@@ -130,8 +130,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-2 sm:p-6">
-      <Card>
+    <div className="min-h-screen flex justify-center items-center p-2 sm:p-6">
+      <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -285,7 +285,7 @@ function RouteComponent() {
         )}
       </Card>
 
-      <div className="flex w-full justify-center items-center mt-8">
+      <div className="flex w-full justify-center items-center mt-8 sm:hidden">
         <Link to="/">
           <Button>Go to Home</Button>
         </Link>
